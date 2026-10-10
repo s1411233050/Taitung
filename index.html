@@ -1,0 +1,1337 @@
+<!DOCTYPE html>
+<html lang="zh-TW" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>台東台南 4天3夜 自駕隨行 App</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- Google Fonts: Plus Jakarta Sans & Noto Sans TC -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        theme: {
+                            sky: '#0284c7',
+                            skyLight: '#e0f2fe',
+                            ocean: '#0369a1',
+                            meadow: '#10b981',
+                            amber: '#f59e0b',
+                            dark: '#0f172a',
+                            glass: 'rgba(255, 255, 255, 0.72)'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['"Plus Jakarta Sans"', '"Noto Sans TC"', 'system-ui', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Liquid Glass & Responsive Layout System */
+        body {
+            font-family: 'Plus Jakarta Sans', 'Noto Sans TC', system-ui, -apple-system, sans-serif;
+            background: radial-gradient(circle at 10% 20%, rgba(56, 189, 248, 0.18) 0%, transparent 40%),
+                        radial-gradient(circle at 90% 80%, rgba(16, 185, 129, 0.15) 0%, transparent 45%),
+                        linear-gradient(135deg, #e0f2fe 0%, #f0fdf4 50%, #f8fafc 100%);
+            background-attachment: fixed;
+            -webkit-tap-highlight-color: transparent;
+            touch-action: manipulation;
+            user-select: none;
+        }
+
+        .liquid-glass {
+            background: rgba(255, 255, 255, 0.78);
+            backdrop-filter: blur(28px) saturate(190%);
+            -webkit-backdrop-filter: blur(28px) saturate(190%);
+            border: 1px solid rgba(255, 255, 255, 0.88);
+            box-shadow: 0 12px 32px -8px rgba(15, 23, 42, 0.08), 
+                        inset 0 1px 1px 0 rgba(255, 255, 255, 0.9),
+                        0 2px 6px -1px rgba(0, 0, 0, 0.02);
+            border-radius: 24px;
+            transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .liquid-glass-dark {
+            background: rgba(15, 23, 42, 0.88);
+            backdrop-filter: blur(24px) saturate(200%);
+            -webkit-backdrop-filter: blur(24px) saturate(200%);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            box-shadow: 0 16px 36px -8px rgba(2, 132, 199, 0.3);
+        }
+
+        .btn-bounce {
+            transition: transform 0.18s cubic-bezier(0.34, 1.56, 0.64, 1), background-color 0.2s ease, box-shadow 0.2s ease;
+        }
+        .btn-bounce:active {
+            transform: scale(0.93);
+        }
+
+        .sound-bar {
+            display: inline-block;
+            width: 3px;
+            height: 12px;
+            background-color: #38bdf8;
+            border-radius: 3px;
+            animation: soundwave 1.2s infinite ease-in-out;
+        }
+        .sound-bar:nth-child(1) { animation-delay: 0.0s; }
+        .sound-bar:nth-child(2) { animation-delay: 0.2s; }
+        .sound-bar:nth-child(3) { animation-delay: 0.4s; }
+        @keyframes soundwave {
+            0%, 100% { height: 4px; }
+            50% { height: 16px; }
+        }
+
+        .custom-scrollbar::-webkit-scrollbar { width: 5px; height: 5px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(148, 163, 184, 0.4); border-radius: 99px; }
+
+        @media print {
+            header, nav, .no-print, .main-nav-bar { display: none !important; }
+            body { background: white !important; overflow: visible !important; }
+            .booklet-container { max-width: 100% !important; box-shadow: none !important; border: none !important; }
+            .main-view { display: block !important; }
+        }
+    </style>
+</head>
+<body class="h-full flex flex-col overflow-x-hidden text-slate-800 antialiased selection:bg-sky-500 selection:text-white pb-24 md:pb-28">
+
+    <!-- Toast Notifications -->
+    <div id="toast-container" class="fixed top-4 right-4 left-4 md:left-auto md:w-80 z-[9999] flex flex-col gap-2 pointer-events-none"></div>
+
+    <header class="p-2 sm:p-3 shrink-0 z-30">
+        <div class="max-w-5xl mx-auto liquid-glass p-2.5 px-3.5 flex justify-between items-center gap-2">
+            
+            <!-- Branding -->
+            <div class="flex items-center space-x-2.5 min-w-0">
+                <div class="w-10 h-10 rounded-[18px] bg-gradient-to-br from-sky-400 via-emerald-400 to-amber-400 p-0.5 shadow-md flex items-center justify-center shrink-0">
+                    <div class="w-full h-full bg-slate-900/10 backdrop-blur-md rounded-[16px] flex items-center justify-center text-white">
+                        <i class="fa-solid fa-car-side text-amber-300 text-base"></i>
+                    </div>
+                </div>
+                <div class="min-w-0">
+                    <div class="flex items-center gap-1.5 flex-wrap">
+                        <h1 class="font-black text-xs sm:text-sm md:text-base tracking-tight text-slate-900 truncate">
+                            台東台南 4D3N 自駕隨行 App
+                        </h1>
+                        <span class="text-[10px] font-extrabold bg-gradient-to-r from-sky-600 to-emerald-600 text-white px-2 py-0.5 rounded-full shrink-0 shadow-sm">
+                            4天3夜隨行版
+                        </span>
+                    </div>
+                    <p class="text-[10px] sm:text-xs text-slate-500 font-semibold truncate mt-0.5">
+                        <i class="fa-solid fa-compass text-sky-600"></i> 台中啟程 • 縱谷海岸慢遊 • Day 4 預計 15:00 返抵台中
+                    </p>
+                </div>
+            </div>
+
+            <!-- Controls: Audio Player & Export -->
+            <div class="flex items-center gap-1.5 shrink-0">
+                <button onclick="toggleMusicModal()" class="btn-bounce text-xs bg-sky-50/90 hover:bg-sky-100/90 text-sky-900 font-extrabold px-2.5 py-2 rounded-[16px] border border-sky-200/80 flex items-center gap-1.5 shadow-sm">
+                    <i class="fa-solid fa-music text-sky-600 animate-bounce"></i>
+                    <span class="hidden sm:inline">背景音樂</span>
+                    <div id="sound-wave-anim" class="flex items-center gap-0.5 ml-0.5">
+                        <span class="sound-bar"></span>
+                        <span class="sound-bar"></span>
+                        <span class="sound-bar"></span>
+                    </div>
+                </button>
+
+                <button onclick="openExportModal()" class="btn-bounce text-xs bg-slate-900 hover:bg-slate-800 text-white font-extrabold px-3 py-2 rounded-[16px] shadow-md flex items-center gap-1">
+                    <i class="fa-solid fa-share-nodes text-amber-400"></i>
+                    <span class="hidden sm:inline">匯出行程</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="flex-1 max-w-5xl w-full mx-auto px-2 sm:px-3 pb-2 flex flex-col overflow-y-auto md:overflow-hidden relative">
+
+        <!-- VIEW 1: 每日行程與 Google Maps (Itinerary View) -->
+        <div id="view-itinerary" class="main-view flex flex-col md:flex-row gap-3 min-h-full">
+            
+            <!-- Left Side: Itinerary List -->
+            <div class="w-full md:w-1/2 flex flex-col">
+                <div class="liquid-glass flex-1 flex flex-col p-3 sm:p-4">
+                    
+                    <!-- Preset Selection & Day Switcher -->
+                    <div class="pb-3 border-b border-slate-200/80 flex flex-col gap-2 shrink-0">
+                        <!-- Updated Preset selector: Flexible 4-column layout without 老饕美食 -->
+                        <div class="grid grid-cols-2 sm:grid-cols-4 gap-1.5">
+                            <button onclick="switchPreset('my_custom')" id="btn-preset-my_custom" class="preset-btn btn-bounce text-[10px] sm:text-xs font-black py-2 px-1.5 rounded-2xl border text-center bg-gradient-to-r from-amber-500 to-orange-500 text-white border-amber-500 shadow-sm">
+                                ⭐️ 自由規劃行程
+                            </button>
+                            <button onclick="switchPreset('photo')" id="btn-preset-photo" class="preset-btn btn-bounce text-[10px] sm:text-xs font-bold py-2 px-1.5 rounded-2xl border border-slate-200 bg-white/80 text-slate-600">
+                                📸 夢幻攝影美拍
+                            </button>
+                            <button onclick="switchPreset('classic')" id="btn-preset-classic" class="preset-btn btn-bounce text-[10px] sm:text-xs font-bold py-2 px-1.5 rounded-2xl border border-slate-200 bg-white/80 text-slate-600">
+                                🌟 經典必訪全覽
+                            </button>
+                            <button onclick="switchPreset('culture')" id="btn-preset-culture" class="preset-btn btn-bounce text-[10px] sm:text-xs font-bold py-2 px-1.5 rounded-2xl border border-slate-200 bg-white/80 text-slate-600">
+                                🏛️ 人文歷史之旅
+                            </button>
+                        </div>
+
+                        <!-- Day Tabs -->
+                        <div class="grid grid-cols-4 gap-1 pt-0.5">
+                            <button onclick="setActiveDay(1)" id="day-tab-1" class="day-tab btn-bounce py-1.5 rounded-2xl text-center text-xs font-black transition bg-sky-600 text-white shadow-sm">
+                                Day 1<br><span class="font-normal text-[9px] opacity-90">10/23 五</span>
+                            </button>
+                            <button onclick="setActiveDay(2)" id="day-tab-2" class="day-tab btn-bounce py-1.5 rounded-2xl text-center text-xs font-black transition bg-white/80 text-slate-600 hover:bg-white border border-slate-200/60">
+                                Day 2<br><span class="font-normal text-[9px] opacity-90">10/24 六</span>
+                            </button>
+                            <button onclick="setActiveDay(3)" id="day-tab-3" class="day-tab btn-bounce py-1.5 rounded-2xl text-center text-xs font-black transition bg-white/80 text-slate-600 hover:bg-white border border-slate-200/60">
+                                Day 3<br><span class="font-normal text-[9px] opacity-90">10/25 日</span>
+                            </button>
+                            <button onclick="setActiveDay(4)" id="day-tab-4" class="day-tab btn-bounce py-1.5 rounded-2xl text-center text-xs font-black transition bg-white/80 text-slate-600 hover:bg-white border border-slate-200/60">
+                                Day 4<br><span class="font-normal text-[9px] opacity-90">10/26 一</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Spot Timeline List -->
+                    <div class="py-2.5 space-y-2.5 flex-1 overflow-y-auto custom-scrollbar max-h-[420px]" id="itinerary-list-container">
+                        <!-- Dynamic rendering via JS with Up/Down buttons -->
+                    </div>
+
+                    <!-- Action Footer -->
+                    <div class="pt-3 border-t border-slate-200/80 flex items-center justify-between shrink-0 mt-2">
+                        <div class="flex flex-col">
+                            <span class="font-extrabold text-slate-900 text-xs sm:text-sm" id="daily-distance-text">預估行車約 0 km</span>
+                            <span class="text-[10px] sm:text-xs text-slate-500 font-semibold mt-0.5" id="daily-spot-count">已排 0 個地點</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <button onclick="openGoogleMapsNav()" class="btn-bounce text-xs bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold px-3.5 py-2.5 rounded-2xl shadow-md flex items-center gap-1.5">
+                                <i class="fa-solid fa-location-arrow text-amber-300"></i> Google 導航
+                            </button>
+                            <button onclick="openGoogleSearchModal()" class="btn-bounce text-xs bg-slate-900 hover:bg-slate-800 text-white font-bold px-3 py-2.5 rounded-2xl shadow-sm flex items-center gap-1">
+                                <i class="fa-solid fa-plus text-amber-400"></i> 加地點
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Side: Google Map Container -->
+            <div class="w-full md:w-1/2 min-h-[360px] md:min-h-[500px] flex flex-col relative shrink-0">
+                <div class="liquid-glass flex-1 p-2 relative shadow-md flex flex-col rounded-[24px] overflow-hidden">
+                    
+                    <div class="absolute top-3 left-3 right-3 z-[10] flex justify-between items-center pointer-events-none">
+                        <div class="bg-slate-900/85 backdrop-blur-md px-3 py-1.5 rounded-full shadow-lg border border-white/20 flex items-center gap-2 text-xs font-extrabold text-white pointer-events-auto">
+                            <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-ping"></span>
+                            <span id="map-day-indicator">Day 1 路線地圖</span>
+                        </div>
+
+                        <button onclick="openInGoogleMapsApp()" class="bg-white/95 backdrop-blur-md px-3 py-1.5 rounded-full shadow-md border border-slate-200/80 flex items-center gap-1 text-[11px] font-extrabold text-slate-800 pointer-events-auto btn-bounce">
+                            <i class="fa-brands fa-google text-emerald-600"></i> App 導航
+                        </button>
+                    </div>
+
+                    <div id="gmap-wrapper" class="w-full h-full min-h-[340px] rounded-[20px] overflow-hidden bg-slate-100 flex items-center justify-center relative">
+                        <iframe id="gmap-iframe" class="w-full h-full border-0 min-h-[340px]" loading="lazy" allowfullscreen referrerpolicy="no-referrer-when-downgrade" src="about:blank"></iframe>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- VIEW 2: 美食與景點庫 (Library View) -->
+        <div id="view-library" class="main-view hidden flex-1 flex-col min-h-full">
+            <div class="liquid-glass flex-1 flex flex-col p-3.5 sm:p-4">
+                
+                <div class="flex flex-col sm:flex-row gap-2.5 justify-between items-center mb-3 shrink-0">
+                    <div class="flex items-center gap-1.5 overflow-x-auto w-full sm:w-auto pb-1 custom-scrollbar text-xs">
+                        <button onclick="filterModalCategory('all')" id="cat-btn-all" class="cat-btn btn-bounce px-3.5 py-1.5 rounded-full bg-sky-600 text-white font-extrabold shrink-0 shadow-sm">全部選單</button>
+                        <button onclick="filterModalCategory('food')" id="cat-btn-food" class="cat-btn btn-bounce px-3.5 py-1.5 rounded-full bg-white/80 text-amber-800 border border-amber-200 font-bold shrink-0"><i class="fa-solid fa-utensils text-amber-500 mr-1"></i>在地美食</button>
+                        <button onclick="filterModalCategory('must_visit')" id="cat-btn-must_visit" class="cat-btn btn-bounce px-3.5 py-1.5 rounded-full bg-white/80 text-emerald-800 border border-emerald-200 font-bold shrink-0"><i class="fa-solid fa-star text-emerald-500 mr-1"></i>三大必訪</button>
+                        <button onclick="filterModalCategory('taitung_city')" id="cat-btn-taitung_city" class="cat-btn btn-bounce px-3.5 py-1.5 rounded-full bg-white/80 text-slate-600 border border-slate-200 font-medium shrink-0">台東市區</button>
+                        <button onclick="filterModalCategory('taitung_valley')" id="cat-btn-taitung_valley" class="cat-btn btn-bounce px-3.5 py-1.5 rounded-full bg-white/80 text-slate-600 border border-slate-200 font-medium shrink-0">縱谷/池上</button>
+                        <button onclick="filterModalCategory('tainan')" id="cat-btn-tainan" class="cat-btn btn-bounce px-3.5 py-1.5 rounded-full bg-white/80 text-slate-600 border border-slate-200 font-medium shrink-0">台南美食</button>
+                    </div>
+
+                    <div class="flex items-center gap-2 w-full sm:w-auto shrink-0">
+                        <div class="relative flex-1 sm:w-48">
+                            <input type="text" id="spot-search-input" onkeyup="searchSpots()" placeholder="搜尋景點或美食..." class="w-full bg-white/90 border border-slate-200 text-xs rounded-2xl px-3 py-2 pl-8 focus:outline-none focus:ring-2 focus:ring-sky-500">
+                            <i class="fa-solid fa-magnifying-glass absolute left-3 top-2.5 text-slate-400 text-xs"></i>
+                        </div>
+                        <button onclick="openGoogleSearchModal()" class="btn-bounce text-xs bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold px-3 py-2 rounded-2xl shadow-sm flex items-center gap-1 shrink-0">
+                            <i class="fa-brands fa-google mr-0.5"></i> 地圖匯入
+                        </button>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 p-0.5" id="library-grid-container">
+                    <!-- Dynamic rendering via JS -->
+                </div>
+            </div>
+        </div>
+
+        <!-- VIEW 3: Gemini AI 隨行助理 -->
+        <div id="view-ai" class="main-view hidden flex-1 flex-col min-h-full">
+            <div class="liquid-glass flex-1 flex flex-col p-3.5 sm:p-4 shadow-md">
+                
+                <div class="pb-3 border-b border-slate-200/80 flex items-center justify-between shrink-0">
+                    <div class="flex items-center gap-2.5">
+                        <div class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-sky-500 via-teal-400 to-indigo-500 flex items-center justify-center text-white shadow-md">
+                            <i class="fa-solid fa-wand-magic-sparkles text-base animate-pulse"></i>
+                        </div>
+                        <div>
+                            <h2 class="font-extrabold text-slate-900 text-sm sm:text-base flex items-center gap-1.5">
+                                Gemini AI 隨行助理
+                                <span class="bg-sky-100 text-sky-800 text-[10px] font-bold px-2 py-0.5 rounded-full">Gemini 3 Flash</span>
+                            </h2>
+                            <p class="text-[10px] sm:text-xs text-slate-500">極速推薦美食祕境、雨天備案與自訂地點調整</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="py-2.5 flex items-center gap-1.5 overflow-x-auto custom-scrollbar shrink-0 text-[11px]">
+                    <button onclick="askAiPrompt('推薦台東枋山與大武附近海鮮小吃')" class="btn-bounce bg-amber-50 hover:bg-amber-100 text-amber-950 font-bold px-3 py-1.5 rounded-full border border-amber-200/80 shrink-0">
+                        🐟 南迴海鮮美食
+                    </button>
+                    <button onclick="askAiPrompt('介紹悟饕池上飯包故事館與伯朗大道騎單車資訊')" class="btn-bounce bg-sky-50 hover:bg-sky-100 text-sky-900 font-bold px-3 py-1.5 rounded-full border border-sky-200/80 shrink-0">
+                        🌾 池上單車體驗
+                    </button>
+                    <button onclick="askAiPrompt('下雨天台東市區與池上有哪些雨天備案？')" class="btn-bounce bg-emerald-50 hover:bg-emerald-100 text-emerald-900 font-bold px-3 py-1.5 rounded-full border border-emerald-200/80 shrink-0">
+                        🌧️ 花東雨天備案
+                    </button>
+                    <button onclick="askAiPrompt('推薦台南日日和民宿周邊國華街美食')" class="btn-bounce bg-purple-50 hover:bg-purple-100 text-purple-900 font-bold px-3 py-1.5 rounded-full border border-purple-200/80 shrink-0">
+                        🍢 台南國華街美食
+                    </button>
+                </div>
+
+                <div id="ai-chat-container" class="flex-1 overflow-y-auto custom-scrollbar space-y-3 p-3 bg-slate-50/70 rounded-2xl border border-slate-100 my-1 min-h-[220px]">
+                    <div class="flex gap-2.5 items-start">
+                        <div class="w-8 h-8 rounded-full bg-sky-600 text-white flex items-center justify-center text-xs shrink-0 mt-0.5 shadow">
+                            <i class="fa-solid fa-robot"></i>
+                        </div>
+                        <div class="bg-white border border-slate-200/80 p-3 rounded-2xl rounded-tl-none shadow-sm text-xs text-slate-700 max-w-[88%] leading-relaxed">
+                            你好！我是你的台東台南自駕 AI 隨行助理 🤖🌾<br>
+                            已為您同步加入 **10/23~10/26 自由規劃行程**（包含傳媽媽家常菜、初鹿牧場、伯朗大道、大武阿梅海產，與 Day 4 15:00 抵達台中保運 7-11 終點），隨時問我相關資訊！
+                        </div>
+                    </div>
+                </div>
+
+                <div class="pt-2.5 flex items-center gap-2 shrink-0">
+                    <input type="text" id="ai-user-input" onkeydown="if(event.key==='Enter') sendAiMessage()" placeholder="向 AI 詢問景點、美食或備案..." class="flex-1 bg-white border border-slate-200 text-xs rounded-2xl px-3.5 py-2.5 focus:outline-none focus:ring-2 focus:ring-sky-500 shadow-sm">
+                    <button onclick="sendAiMessage()" id="btn-send-ai" class="bg-sky-600 hover:bg-sky-700 text-white font-extrabold px-4 py-2.5 rounded-2xl btn-bounce text-xs flex items-center gap-1 shadow-md shrink-0">
+                        <i class="fa-solid fa-paper-plane"></i> 傳送
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- VIEW 4: 當季活動與情報 (Events View) -->
+        <div id="view-events" class="main-view hidden flex-1 flex-col min-h-full">
+            <div class="liquid-glass flex-1 p-3.5 sm:p-5 space-y-4 shadow-md">
+                <div class="border-b border-slate-200 pb-2.5 flex items-center justify-between">
+                    <div>
+                        <h2 class="font-black text-sm sm:text-base text-slate-900 flex items-center gap-2">
+                            <i class="fa-solid fa-wheat-awn text-amber-500"></i> 10/23 ~ 10/26 限定在地亮點與慢遊活動
+                        </h2>
+                        <p class="text-xs text-slate-500 mt-0.5">秋季花東金黃稻浪、三大必訪景點攻略與夜間市集盛宴</p>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-3.5 text-xs">
+                    <div class="bg-amber-50/90 border border-amber-200/80 p-3.5 rounded-[20px] flex gap-3 shadow-sm">
+                        <img src="https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=300&auto=format&fit=crop" onerror="this.src='https://placehold.co/300x200/f59e0b/ffffff?text=池上稻浪'" class="w-20 h-20 object-cover rounded-xl shrink-0">
+                        <div>
+                            <h3 class="font-extrabold text-amber-950 text-xs sm:text-sm mb-1">
+                                🌾 池上伯朗大道 • 季秋金黃稻浪
+                            </h3>
+                            <p class="text-slate-600 leading-relaxed text-[11px]">
+                                10/23-26 正逢池上稻穗結實轉為燦爛金黃的季節！騎腳踏車徜徉在無電線桿的金黃稻田間。
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="bg-emerald-50/90 border border-emerald-200/80 p-3.5 rounded-[20px] flex gap-3 shadow-sm">
+                        <img src="https://images.unsplash.com/photo-1527153857715-3908f2bae5e8?w=300&auto=format&fit=crop" onerror="this.src='https://placehold.co/300x200/10b981/ffffff?text=初鹿牧場'" class="w-20 h-20 object-cover rounded-xl shrink-0">
+                        <div>
+                            <h3 class="font-extrabold text-emerald-950 text-xs sm:text-sm mb-1">
+                                🥛 初鹿牧場 (鮮乳體驗)
+                            </h3>
+                            <p class="text-slate-600 leading-relaxed text-[11px]">
+                                享用現採鮮乳、雙色冰淇淋與特級鮮奶饅頭，放眼望去為綿延綠草地與高台丘陵。
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="bg-sky-50/90 border border-sky-200/80 p-3.5 rounded-[20px] flex gap-3 shadow-sm">
+                        <img src="https://images.unsplash.com/photo-1566127444979-b3d2b654e3d7?w=300&auto=format&fit=crop" onerror="this.src='https://placehold.co/300x200/0284c7/ffffff?text=史前博物館'" class="w-20 h-20 object-cover rounded-xl shrink-0">
+                        <div>
+                            <h3 class="font-extrabold text-sky-950 text-xs sm:text-sm mb-1">
+                                🏛️ 國立臺灣史前文化博物館
+                            </h3>
+                            <p class="text-slate-600 leading-relaxed text-[11px]">
+                                全新升級開館！展出臺灣數千年前史前文物與南島語族文化，適合彈性慢遊。
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="bg-rose-50/90 border border-rose-200/80 p-3.5 rounded-[20px] flex gap-3 shadow-sm">
+                        <img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=300&auto=format&fit=crop" onerror="this.src='https://placehold.co/300x200/f43f5e/ffffff?text=多良車站'" class="w-20 h-20 object-cover rounded-xl shrink-0">
+                        <div>
+                            <h3 class="font-extrabold text-rose-950 text-xs sm:text-sm mb-1">
+                                🚂 多良車站 (海景鐵道)
+                            </h3>
+                            <p class="text-slate-600 leading-relaxed text-[11px]">
+                                南迴必停亮點！觀景平台可拍攝火車穿過隧道衝出太平洋海岸線的絕美畫面。
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- VIEW 5: 4D3N 導覽手冊 (Booklet View) -->
+        <div id="view-booklet" class="main-view hidden flex-1 flex-col min-h-full">
+            <div class="liquid-glass flex-1 p-4 md:p-6 space-y-4 booklet-container bg-white/90">
+                
+                <div class="bg-gradient-to-r from-sky-900 via-slate-900 to-emerald-950 text-white p-4 sm:p-5 rounded-[24px] shadow-lg flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
+                    <div>
+                        <div class="flex items-center gap-2 mb-1">
+                            <span class="bg-amber-400 text-amber-950 font-black text-[10px] px-2.5 py-0.5 rounded-full">專屬行程同步手冊</span>
+                            <span class="text-sky-200 text-xs font-semibold">10/23 ~ 10/26 (4天3夜)</span>
+                        </div>
+                        <h2 class="font-black text-base sm:text-xl md:text-2xl">台東台南山海慢遊 • 隨行導覽手冊</h2>
+                        <p class="text-xs text-slate-300 mt-1">集合：Day 1 07:00 台中保運 7-11 ｜ 終點：Day 4 15:00 返抵台中保運 7-11</p>
+                    </div>
+                    <div class="flex items-center gap-2 no-print shrink-0">
+                        <button onclick="handleMobilePrint()" class="btn-bounce bg-emerald-500 hover:bg-emerald-600 text-white font-extrabold px-3.5 py-2 rounded-xl text-xs flex items-center gap-1.5 shadow">
+                            <i class="fa-solid fa-print"></i> 列印 / 儲存 PDF
+                        </button>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5 text-xs">
+                    <div class="bg-sky-50 border border-sky-200/80 p-3 rounded-2xl">
+                        <span class="font-bold text-sky-950 block mb-0.5"><i class="fa-solid fa-gas-pump mr-1"></i> 行車補給提示</span>
+                        <p class="text-slate-600">Day 1 07:00 台中保運 7-11 準時出發；Day 4 預計 15:00 返抵台中保運 7-11（終點）。入山前請確認油量。</p>
+                    </div>
+                    <div class="bg-emerald-50 border border-emerald-200/80 p-3 rounded-2xl">
+                        <span class="font-bold text-emerald-950 block mb-0.5"><i class="fa-solid fa-utensils mr-1"></i> 首選與備選餐廳</span>
+                        <p class="text-slate-600">已將金馬飯店傳媽媽家常菜/3M鮮魚湯、榕樹下/阿鋐藍蜻蜓、阿梅海產/鼎倫牛肉麵整合完成。</p>
+                    </div>
+                    <div class="bg-amber-50 border border-amber-200/80 p-3 rounded-2xl">
+                        <span class="font-bold text-amber-950 block mb-0.5"><i class="fa-solid fa-bed mr-1"></i> 住宿安排</span>
+                        <p class="text-slate-600">Day 1 & Day 2：台東 丰綺會館 ｜ Day 3：台南 日日和民宿。</p>
+                    </div>
+                </div>
+
+                <!-- Dynamic Booklet Timeline Rendering -->
+                <div id="booklet-daily-content" class="space-y-3.5">
+                    <!-- Updated automatically via JS -->
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Floating Liquid Glass Nav Bar -->
+    <nav class="main-nav-bar fixed bottom-3 left-1/2 -translate-x-1/2 z-40 w-[94%] max-w-lg liquid-glass-dark rounded-full p-1.5 flex justify-around items-center text-[10px] sm:text-[11px] font-bold text-slate-300">
+        <button onclick="switchMainTab('itinerary')" id="nav-btn-itinerary" class="nav-btn flex-1 py-1.5 px-2 rounded-full transition flex flex-col items-center justify-center gap-0.5 bg-sky-600 text-white shadow-md font-bold">
+            <i class="fa-solid fa-calendar-day text-sm sm:text-base"></i>
+            <span>每日行程</span>
+        </button>
+        <button onclick="switchMainTab('library')" id="nav-btn-library" class="nav-btn flex-1 py-1.5 px-2 rounded-full transition flex flex-col items-center justify-center gap-0.5 text-slate-300 hover:text-sky-300 font-bold">
+            <i class="fa-solid fa-utensils text-sm sm:text-base text-amber-400"></i>
+            <span>美食景點</span>
+        </button>
+        <button onclick="switchMainTab('ai')" id="nav-btn-ai" class="nav-btn flex-1 py-1.5 px-2 rounded-full transition flex flex-col items-center justify-center gap-0.5 text-slate-300 hover:text-sky-300 font-bold">
+            <i class="fa-solid fa-wand-magic-sparkles text-sm sm:text-base text-emerald-400"></i>
+            <span>AI 助理</span>
+        </button>
+        <button onclick="switchMainTab('events')" id="nav-btn-events" class="nav-btn flex-1 py-1.5 px-2 rounded-full transition flex flex-col items-center justify-center gap-0.5 text-slate-300 hover:text-sky-300 font-bold">
+            <i class="fa-solid fa-wheat-awn text-sm sm:text-base text-amber-300"></i>
+            <span>當季活動</span>
+        </button>
+        <button onclick="switchMainTab('booklet')" id="nav-btn-booklet" class="nav-btn flex-1 py-1.5 px-2 rounded-full transition flex flex-col items-center justify-center gap-0.5 text-slate-300 hover:text-sky-300 font-bold">
+            <i class="fa-solid fa-book-open text-sm sm:text-base text-sky-400"></i>
+            <span>導覽手冊</span>
+        </button>
+    </nav>
+
+    <!-- MODAL 1: Audio Player Dialog -->
+    <div id="music-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-md z-[1000] flex items-center justify-center p-4 hidden">
+        <div class="liquid-glass shadow-2xl w-full max-w-sm border border-white p-5 flex flex-col gap-4">
+            <div class="flex justify-between items-center">
+                <h3 class="font-black text-slate-900 text-sm sm:text-base flex items-center gap-2">
+                    <i class="fa-solid fa-compact-disc text-sky-600 text-lg animate-spin" style="animation-duration: 6s;"></i> 自駕慢遊主題曲
+                </h3>
+                <button onclick="toggleMusicModal()" class="w-8 h-8 rounded-full bg-slate-100 text-slate-600 flex items-center justify-center btn-bounce">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            
+            <div class="bg-gradient-to-br from-sky-50 to-emerald-50 p-6 rounded-3xl border border-sky-100 flex flex-col items-center text-center">
+                <div class="w-28 h-28 sm:w-32 sm:h-32 rounded-full bg-gradient-to-tr from-sky-500 via-teal-400 to-emerald-400 flex items-center justify-center text-white text-5xl sm:text-6xl shadow-xl border-4 border-white mb-4 animate-pulse">
+                    <i class="fa-solid fa-headphones"></i>
+                </div>
+
+                <div class="w-full my-2">
+                    <audio id="bg-audio-player" controls class="w-full rounded-xl shadow-sm">
+                        <source src="https://cdn.pixabay.com/download/audio/2022/05/27/audio_1808fbf07a.mp3?filename=lofi-study-112191.mp3" type="audio/mpeg">
+                        您的瀏覽器不支援音樂播放。
+                    </audio>
+                </div>
+            </div>
+
+            <button onclick="toggleMusicModal()" class="w-full bg-slate-900 hover:bg-slate-800 text-white font-extrabold text-xs sm:text-sm py-3 rounded-2xl btn-bounce shadow-md">
+                關閉視窗 (背景繼續播放)
+            </button>
+        </div>
+    </div>
+
+    <!-- MODAL 2: Google Maps Link Import & Dynamic Location Search Modal -->
+    <div id="google-search-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-md z-[1000] flex items-center justify-center p-4 hidden">
+        <div class="liquid-glass shadow-2xl w-full max-w-md border border-white p-4 sm:p-5 flex flex-col gap-3">
+            <div class="flex justify-between items-center pb-2 border-b border-slate-100">
+                <h3 class="font-black text-slate-900 text-sm sm:text-base flex items-center gap-2">
+                    <i class="fa-brands fa-google text-emerald-600 text-lg"></i> Google 地圖快速匯入地點
+                </h3>
+                <button onclick="closeGoogleSearchModal()" class="w-7 h-7 rounded-full bg-slate-100 text-slate-600 flex items-center justify-center btn-bounce">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <div class="space-y-3 text-xs">
+                <div class="bg-sky-50/90 border border-sky-200 p-3 rounded-2xl">
+                    <label class="block font-extrabold text-sky-950 mb-1">
+                        <i class="fa-solid fa-link text-sky-600 mr-1"></i> 貼上 Google 地圖 App 分享網址或名稱
+                    </label>
+                    <input type="text" id="gmap-link-input" oninput="handleGoogleInput(this.value)" placeholder="例如 maps.app.goo.gl/... 或 傳媽媽家常菜" class="w-full bg-white border border-sky-200 rounded-xl p-2.5 outline-none text-xs focus:ring-2 focus:ring-sky-500">
+                </div>
+
+                <div class="flex gap-2 items-center">
+                    <input type="text" id="gmap-query-input" placeholder="例如：傳媽媽家常菜、悟饕池上飯包故事館" class="flex-1 border border-slate-200 rounded-xl p-2.5 outline-none text-xs focus:ring-2 focus:ring-sky-500">
+                    <button onclick="executeSpotSearch()" class="bg-sky-600 hover:bg-sky-700 text-white font-bold px-4 py-2.5 rounded-xl btn-bounce flex items-center gap-1 shrink-0">
+                        <i class="fa-solid fa-magnifying-glass"></i> 搜尋
+                    </button>
+                </div>
+
+                <div id="import-result-card" class="hidden bg-emerald-50 border border-emerald-200 p-3 rounded-2xl flex flex-col gap-2">
+                    <div class="flex items-start justify-between">
+                        <div>
+                            <h4 class="font-extrabold text-emerald-950 text-sm" id="res-spot-name">地點名稱</h4>
+                            <p class="text-[11px] text-emerald-800 mt-0.5" id="res-spot-desc">地址與簡介...</p>
+                        </div>
+                        <span class="bg-emerald-200 text-emerald-900 text-[10px] font-bold px-2 py-0.5 rounded-full shrink-0">解析成功</span>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-2 mt-1">
+                        <div>
+                            <label class="block font-bold text-emerald-950 text-[10px] mb-1">加入至行程哪一天？</label>
+                            <select id="import-target-day" class="w-full bg-white border border-emerald-300 rounded-xl p-1.5 font-bold text-slate-800 text-xs">
+                                <option value="1">Day 1 (10/23 五)</option>
+                                <option value="2">Day 2 (10/24 六)</option>
+                                <option value="3">Day 3 (10/25 日)</option>
+                                <option value="4">Day 4 (10/26 一)</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block font-bold text-emerald-950 text-[10px] mb-1">類別</label>
+                            <select id="import-category" class="w-full bg-white border border-emerald-300 rounded-xl p-1.5 font-bold text-slate-800 text-xs">
+                                <option value="food">🍜 在地美食</option>
+                                <option value="spot">🏞️ 景點風光</option>
+                                <option value="culture">🏛️ 人文古蹟</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <button onclick="confirmImportSpot()" class="w-full mt-1 bg-emerald-700 hover:bg-emerald-800 text-white font-extrabold py-2.5 rounded-xl btn-bounce text-xs shadow">
+                        <i class="fa-solid fa-plus-circle"></i> 確認新增至行程 (同步手冊)
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL 3: Export & Mobile PDF Print Modal -->
+    <div id="export-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-md z-[1000] flex items-center justify-center p-4 hidden">
+        <div class="liquid-glass shadow-2xl w-full max-w-xl max-h-[85vh] flex flex-col overflow-hidden border border-white">
+            <div class="p-4 bg-slate-900 text-white flex justify-between items-center">
+                <h3 class="font-extrabold text-sm sm:text-base flex items-center gap-2">
+                    <i class="fa-solid fa-paper-plane text-amber-400"></i> 4天3夜 行程複製與匯出
+                </h3>
+                <button onclick="closeExportModal()" class="w-7 h-7 rounded-full bg-white/10 text-white flex items-center justify-center btn-bounce">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            <div class="p-4 flex-1 overflow-y-auto custom-scrollbar space-y-3 text-xs">
+                <p class="text-slate-600 font-medium">已為您即時同步 4 天 3 夜最新自由規劃行程文字檔：</p>
+                <div class="bg-slate-900 text-emerald-400 p-3.5 rounded-2xl font-mono text-[11px] leading-relaxed overflow-x-auto border border-slate-800 max-h-60" id="export-text-preview"></div>
+            </div>
+            <div class="p-3 bg-slate-100/90 border-t border-slate-200 flex flex-wrap gap-2 justify-end">
+                <button onclick="copyToClipboard()" class="btn-bounce bg-sky-600 hover:bg-sky-700 text-white font-extrabold px-4 py-2 rounded-xl text-xs flex items-center gap-1.5 shadow-md">
+                    <i class="fa-solid fa-copy"></i> 複製行程文字
+                </button>
+                <button onclick="closeExportModal()" class="btn-bounce bg-slate-300 text-slate-800 font-bold px-4 py-2 rounded-xl text-xs">關閉</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // SPOTS_DATABASE containing itinerary locations & options with updated Day 4 end point description
+        const SPOTS_DATABASE = {
+            'taichung_start': {
+                id: 'taichung_start', name: '台中保運 7-11 門市', lat: 24.1200, lng: 120.6650,
+                category: 'transit', type: 'spot', tag: '🏁 起點/終點', duration: '30 mins',
+                desc: 'Day 1 07:00 集合出發 ｜ Day 4 預計 15:00 抵達（賦歸終點）。', mustVisit: true,
+                img: 'https://images.unsplash.com/photo-1526778548025-fa2f459cd5c1?w=400&auto=format&fit=crop'
+            },
+            'fangshan_jinma': {
+                id: 'fangshan_jinma', name: '金馬飯店－傳媽媽家常菜 (枋山午餐首選)', lat: 22.2585, lng: 120.6525,
+                category: 'transit', type: 'food', tag: '🍱 午餐首選', duration: '1 hr',
+                desc: '屏東枋山南迴前哨站，熱門道地家常菜，美味海鮮與熱炒。', mustVisit: true,
+                img: 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=400&auto=format&fit=crop'
+            },
+            'fangshan_3m': {
+                id: 'fangshan_3m', name: '3M 鮮魚湯肉燥飯 (枋山午餐備選)', lat: 22.2560, lng: 120.6510,
+                category: 'transit', type: 'food', tag: '🍜 午餐備選', duration: '45 mins',
+                desc: '鮮美現煮鮮魚湯搭配香氣四溢肉燥飯，在地平價小吃首選。', mustVisit: false,
+                img: 'https://images.unsplash.com/photo-1547592180-85f173990554?w=400&auto=format&fit=crop'
+            },
+            'museum_prehistory': {
+                id: 'museum_prehistory', name: '國立臺灣史前文化博物館', lat: 22.7612, lng: 121.0928,
+                category: 'taitung_city', type: 'spot', tag: '🏛️ 彈性景點', duration: '2 hrs',
+                desc: '全新升級開館！展出臺灣史前考古與南島語族文化（Day 1 或 Day 3 彈性造訪）。', mustVisit: true,
+                img: 'https://images.unsplash.com/photo-1566127444979-b3d2b654e3d7?w=400&auto=format&fit=crop'
+            },
+            'rongshu_mitaimu': {
+                id: 'rongshu_mitaimu', name: '榕樹下米苔目 (晚餐首選)', lat: 22.7530, lng: 121.1510,
+                category: 'taitung_city', type: 'food', tag: '🍜 晚餐首選', duration: '45 mins',
+                desc: '台東正氣路超強名店！柴魚片滿溢香氣，米苔目彈牙濃郁。', mustVisit: true,
+                img: 'https://images.unsplash.com/photo-1569718212165-3a8278d5f624?w=400&auto=format&fit=crop'
+            },
+            'blue_dragonfly': {
+                id: 'blue_dragonfly', name: '阿鋐炸雞 / 藍蜻蜓速食專賣店 (晚餐備選)', lat: 22.7538, lng: 121.1495,
+                category: 'taitung_city', type: 'food', tag: '🍗 晚餐備選', duration: '45 mins',
+                desc: '台東幾十年台味炸雞名店，薄皮酥脆汁多，多汁椒鹽口感。', mustVisit: false,
+                img: 'https://images.unsplash.com/photo-1626645738196-c2a7c87a8f58?w=400&auto=format&fit=crop'
+            },
+            'lin_stinky_tofu': {
+                id: 'lin_stinky_tofu', name: '林家臭豆腐 (正氣路備選)', lat: 22.7541, lng: 121.1502,
+                category: 'taitung_city', type: 'food', tag: '🍜 晚餐備選', duration: '45 mins',
+                desc: '外酥內嫩配上獨門九層塔泡菜，正氣路經典排隊小吃。', mustVisit: false,
+                img: 'https://images.unsplash.com/photo-1563245372-f21724e3856d?w=400&auto=format&fit=crop'
+            },
+            'tiehua_music_village': {
+                id: 'tiehua_music_village', name: '鐵花村音樂聚落慢市集', lat: 22.7525, lng: 121.1442,
+                category: 'taitung_city', type: 'spot', tag: '🌙 夜間漫步', duration: '1.5 hrs',
+                desc: '熱氣球彩繪燈海、文創手作攤位與現場音樂演出，用餐後漫步體驗。', mustVisit: true,
+                img: 'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=400&auto=format&fit=crop'
+            },
+            'fengqi_hotel': {
+                id: 'fengqi_hotel', name: '台東 丰綺會館 (Day 1 & 2 住宿)', lat: 22.7580, lng: 121.1445,
+                category: 'taitung_city', type: 'hotel', tag: '🏨 飯店住宿', duration: 'Check-in',
+                desc: '台東市區質感會館，生活機能極佳，便利漫遊市區景點。', mustVisit: true,
+                img: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?w=400&auto=format&fit=crop'
+            },
+            'chulu_ranch': {
+                id: 'chulu_ranch', name: '初鹿牧場 (體驗牧場風光)', lat: 22.8601, lng: 121.1168,
+                category: 'taitung_valley', type: 'spot', tag: '🐮 上午行程', duration: '2.5 hrs',
+                desc: '綿延草地丘陵，體驗餵牛、享用現採鮮乳與鮮奶饅頭冰淇淋。', mustVisit: true,
+                img: 'https://images.unsplash.com/photo-1527153857715-3908f2bae5e8?w=400&auto=format&fit=crop'
+            },
+            'wutao_chishang': {
+                id: 'wutao_chishang', name: '悟饕池上飯包文化故事館', lat: 23.1238, lng: 121.2162,
+                category: 'taitung_valley', type: 'food', tag: '🍱 午餐必訪', duration: '1 hr',
+                desc: '坐進老火車車廂享用正宗池上便當，探索池上米歷史故事。', mustVisit: true,
+                img: 'https://images.unsplash.com/photo-1563245372-f21724e3856d?w=400&auto=format&fit=crop'
+            },
+            'chishang_brown_road': {
+                id: 'chishang_brown_road', name: '池上伯朗大道 (單車漫步稻田)', lat: 23.1022, lng: 121.2185,
+                category: 'taitung_valley', type: 'spot', tag: '🌾 下午行程', duration: '2.5 hrs',
+                desc: '10/24 燦爛金黃稻浪季節！租單車馳騁於無電線桿稻田間與天堂路。', mustVisit: true,
+                img: 'https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=400&auto=format&fit=crop'
+            },
+            'huijia_shijian': {
+                id: 'huijia_shijian', name: '回家食間－台東拿手菜', lat: 22.7592, lng: 121.1482,
+                category: 'taitung_city', type: 'food', tag: '🍲 晚餐饗宴', duration: '1.5 hrs',
+                desc: '溫馨高質感台東私房手路菜，嚴選在地食材料理。', mustVisit: true,
+                img: 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400&auto=format&fit=crop'
+            },
+            'duoliang_station': {
+                id: 'duoliang_station', name: '太麻里多良車站 (海岸線巡禮)', lat: 22.5074, lng: 120.9602,
+                category: 'taitung_coast', type: 'spot', tag: '🚂 上午景點', duration: '1 hr',
+                desc: '美麗太平洋海岸線車站，觀景台遠眺火車穿過隧道景色。', mustVisit: true,
+                img: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=400&auto=format&fit=crop'
+            },
+            'dawu_amei': {
+                id: 'dawu_amei', name: '大武漁港－阿梅海產 (午餐首選)', lat: 22.3550, lng: 120.8950,
+                category: 'taitung_coast', type: 'food', tag: '🦐 午餐首選', duration: '1 hr',
+                desc: '大武漁港直送活海鮮，生魚片、炒海瓜子與特色鮮魚湯。', mustVisit: true,
+                img: 'https://images.unsplash.com/photo-1534422298391-e4f8c172dddb?w=400&auto=format&fit=crop'
+            },
+            'jinlun_dinglun': {
+                id: 'jinlun_dinglun', name: '金崙－鼎倫牛肉麵 (午餐備選)', lat: 22.5312, lng: 120.9635,
+                category: 'taitung_coast', type: 'food', tag: '🍜 午餐備選', duration: '45 mins',
+                desc: '金崙溫泉小鎮超人氣牛肉麵，湯頭濃郁牛肉厚實。', mustVisit: false,
+                img: 'https://images.unsplash.com/photo-1547592180-85f173990554?w=400&auto=format&fit=crop'
+            },
+            'jinlun_galao': {
+                id: 'jinlun_galao', name: '嘎勞食堂 (原住民風味備選)', lat: 22.5320, lng: 120.9640,
+                category: 'taitung_coast', type: 'food', tag: '🍖 風味備選', duration: '45 mins',
+                desc: '部落排灣族特色原住民風味料理，石板烤肉與阿拜美味。', mustVisit: false,
+                img: 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=400&auto=format&fit=crop'
+            },
+            'ririhe_bnb': {
+                id: 'ririhe_bnb', name: '台南 日日和民宿 (Day 3 住宿)', lat: 22.9960, lng: 120.2030,
+                category: 'tainan', type: 'hotel', tag: '🏡 民宿入住', duration: 'Check-in',
+                desc: '經南迴公路抵達台南並辦理入住，享受古都夜間氛圍。', mustVisit: true,
+                img: 'https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=400&auto=format&fit=crop'
+            },
+            'tainan_free_tour': {
+                id: 'tainan_free_tour', name: '台南市區景點/美食自由行', lat: 22.9975, lng: 120.1970,
+                category: 'tainan', type: 'spot', tag: '🍡 府城巡禮', duration: '3 hrs',
+                desc: '國華街碗粿春捲、赤崁樓古蹟慢步、文章牛肉湯漫遊散策。', mustVisit: true,
+                img: 'https://images.unsplash.com/photo-1569718212165-3a8278d5f624?w=400&auto=format&fit=crop'
+            }
+        };
+
+        const PRESETS = {
+            my_custom: {
+                1: ['taichung_start', 'fangshan_jinma', 'fangshan_3m', 'museum_prehistory', 'rongshu_mitaimu', 'blue_dragonfly', 'lin_stinky_tofu', 'tiehua_music_village', 'fengqi_hotel'],
+                2: ['chulu_ranch', 'wutao_chishang', 'chishang_brown_road', 'huijia_shijian', 'fengqi_hotel'],
+                3: ['duoliang_station', 'dawu_amei', 'jinlun_dinglun', 'jinlun_galao', 'ririhe_bnb'],
+                4: ['tainan_free_tour', 'taichung_start']
+            },
+            photo: {
+                1: ['taichung_start', 'fangshan_jinma', 'museum_prehistory', 'tiehua_music_village', 'fengqi_hotel'],
+                2: ['chulu_ranch', 'chishang_brown_road', 'huijia_shijian', 'fengqi_hotel'],
+                3: ['duoliang_station', 'dawu_amei', 'ririhe_bnb'],
+                4: ['tainan_free_tour', 'taichung_start']
+            },
+            classic: {
+                1: ['taichung_start', 'fangshan_jinma', 'rongshu_mitaimu', 'tiehua_music_village', 'fengqi_hotel'],
+                2: ['chulu_ranch', 'wutao_chishang', 'chishang_brown_road', 'fengqi_hotel'],
+                3: ['duoliang_station', 'dawu_amei', 'ririhe_bnb'],
+                4: ['tainan_free_tour', 'taichung_start']
+            },
+            culture: {
+                1: ['taichung_start', 'museum_prehistory', 'tiehua_music_village', 'fengqi_hotel'],
+                2: ['chulu_ranch', 'wutao_chishang', 'chishang_brown_road', 'fengqi_hotel'],
+                3: ['duoliang_station', 'jinlun_galao', 'ririhe_bnb'],
+                4: ['tainan_free_tour', 'taichung_start']
+            }
+        };
+
+        // State variables
+        let currentTab = 'itinerary';
+        let currentDay = 1;
+        let currentPreset = 'my_custom';
+        let customItinerary = JSON.parse(JSON.stringify(PRESETS.my_custom));
+        let pendingImportSpot = null;
+
+        window.onload = function() {
+            renderItinerary();
+            renderLibraryGrid('all');
+            renderBooklet();
+            updateGoogleMap();
+        };
+
+        function calculateHaversineDistance(lat1, lon1, lat2, lon2) {
+            const R = 6371; // Earth radius in km
+            const dLat = (lat2 - lat1) * Math.PI / 180;
+            const dLon = (lon2 - lon1) * Math.PI / 180;
+            const a = 
+                Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+                Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * 
+                Math.sin(dLon / 2) * Math.sin(dLon / 2);
+            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+            return R * c;
+        }
+
+        function calculateTotalDailyDistance(spotIds) {
+            if (!spotIds || spotIds.length < 2) return 0;
+            let totalKm = 0;
+            for (let i = 0; i < spotIds.length - 1; i++) {
+                const s1 = SPOTS_DATABASE[spotIds[i]];
+                const s2 = SPOTS_DATABASE[spotIds[i + 1]];
+                if (s1 && s2 && s1.lat && s1.lng && s2.lat && s2.lng) {
+                    const straightKm = calculateHaversineDistance(s1.lat, s1.lng, s2.lat, s2.lng);
+                    totalKm += straightKm * 1.28; // Curved highway multiplier
+                }
+            }
+            return Math.round(totalKm);
+        }
+
+        function switchMainTab(tabName) {
+            currentTab = tabName;
+            const tabs = ['itinerary', 'library', 'ai', 'events', 'booklet'];
+
+            tabs.forEach(t => {
+                const viewEl = document.getElementById(`view-${t}`);
+                const btnEl = document.getElementById(`nav-btn-${t}`);
+
+                if (viewEl) {
+                    if (t === tabName) {
+                        viewEl.classList.remove('hidden');
+                        viewEl.classList.add('flex');
+                    } else {
+                        viewEl.classList.add('hidden');
+                        viewEl.classList.remove('flex');
+                    }
+                }
+
+                if (btnEl) {
+                    if (t === tabName) {
+                        btnEl.className = "nav-btn flex-1 py-1.5 px-2 rounded-full transition flex flex-col items-center justify-center gap-0.5 bg-sky-600 text-white shadow-md font-bold";
+                    } else {
+                        btnEl.className = "nav-btn flex-1 py-1.5 px-2 rounded-full transition flex flex-col items-center justify-center gap-0.5 text-slate-300 hover:text-sky-300 font-bold";
+                    }
+                }
+            });
+
+            if (tabName === 'itinerary') {
+                updateGoogleMap();
+            } else if (tabName === 'booklet') {
+                renderBooklet();
+            }
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function setActiveDay(day) {
+            currentDay = day;
+            for (let i = 1; i <= 4; i++) {
+                const btn = document.getElementById(`day-tab-${i}`);
+                if (btn) {
+                    if (i === day) {
+                        btn.className = "day-tab btn-bounce py-1.5 rounded-2xl text-center text-xs font-black transition bg-sky-600 text-white shadow-sm";
+                    } else {
+                        btn.className = "day-tab btn-bounce py-1.5 rounded-2xl text-center text-xs font-black transition bg-white/80 text-slate-600 hover:bg-white border border-slate-200/60";
+                    }
+                }
+            }
+            renderItinerary();
+            updateGoogleMap();
+        }
+
+        function switchPreset(presetKey) {
+            currentPreset = presetKey;
+            customItinerary = JSON.parse(JSON.stringify(PRESETS[presetKey]));
+            
+            ['my_custom', 'photo', 'classic', 'culture'].forEach(p => {
+                const btn = document.getElementById(`btn-preset-${p}`);
+                if (btn) {
+                    if (p === presetKey) {
+                        btn.className = "preset-btn btn-bounce text-[10px] sm:text-xs font-black py-2 px-1.5 rounded-2xl border text-center bg-gradient-to-r from-amber-500 to-orange-500 text-white border-amber-500 shadow-sm";
+                    } else {
+                        btn.className = "preset-btn btn-bounce text-[10px] sm:text-xs font-bold py-2 px-1.5 rounded-2xl border border-slate-200 bg-white/80 text-slate-600";
+                    }
+                }
+            });
+
+            renderItinerary();
+            renderBooklet();
+            updateGoogleMap();
+
+            const nameMap = {
+                'my_custom': '⭐️ 自由規劃行程',
+                'photo': '📸 夢幻攝影美拍',
+                'classic': '🌟 經典必訪全覽',
+                'culture': '🏛️ 人文歷史之旅'
+            };
+            showToast(`已切換至【${nameMap[presetKey]}】`);
+        }
+
+        function moveSpotUp(day, index) {
+            if (index <= 0 || !customItinerary[day]) return;
+            const list = customItinerary[day];
+            const temp = list[index];
+            list[index] = list[index - 1];
+            list[index - 1] = temp;
+
+            renderItinerary();
+            updateGoogleMap();
+            renderBooklet();
+            showToast('已調整造訪順序');
+        }
+
+        function moveSpotDown(day, index) {
+            if (!customItinerary[day] || index >= customItinerary[day].length - 1) return;
+            const list = customItinerary[day];
+            const temp = list[index];
+            list[index] = list[index + 1];
+            list[index + 1] = temp;
+
+            renderItinerary();
+            updateGoogleMap();
+            renderBooklet();
+            showToast('已調整造訪順序');
+        }
+
+        function renderItinerary() {
+            const container = document.getElementById('itinerary-list-container');
+            if (!container) return;
+            const spotIds = customItinerary[currentDay] || [];
+            container.innerHTML = '';
+
+            if (spotIds.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center py-8 text-slate-400 text-xs font-semibold">
+                        <i class="fa-solid fa-map-location-dot text-2xl text-sky-300 mb-2 block"></i>
+                        本日尚無行程地點，點擊下方「加地點」或從美食庫匯入
+                    </div>
+                `;
+                document.getElementById('daily-spot-count').innerText = `已排 0 個地點`;
+                document.getElementById('daily-distance-text').innerText = `預估行車約 0 km`;
+                return;
+            }
+
+            spotIds.forEach((id, index) => {
+                const spot = SPOTS_DATABASE[id] || { name: '自訂地點', tag: '自訂', desc: '新增地點', duration: '60 mins', img: 'https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?w=200&auto=format&fit=crop' };
+
+                const isFirst = index === 0;
+                const isLast = index === spotIds.length - 1;
+
+                const itemHtml = `
+                    <div class="flex items-center gap-2 bg-white/95 border border-slate-200/90 p-2 sm:p-2.5 rounded-2xl shadow-sm hover:shadow-md transition">
+                        <!-- Up/Down Reorder Control Buttons -->
+                        <div class="flex flex-col gap-0.5 shrink-0">
+                            <button onclick="moveSpotUp(${currentDay}, ${index})" ${isFirst ? 'disabled class="opacity-25 cursor-not-allowed text-slate-400 p-0.5 text-[10px]"' : 'class="text-sky-600 hover:text-sky-800 p-0.5 text-[10px] btn-bounce font-extrabold"'} title="向上調整順序">
+                                ▲
+                            </button>
+                            <button onclick="moveSpotDown(${currentDay}, ${index})" ${isLast ? 'disabled class="opacity-25 cursor-not-allowed text-slate-400 p-0.5 text-[10px]"' : 'class="text-sky-600 hover:text-sky-800 p-0.5 text-[10px] btn-bounce font-extrabold"'} title="向下調整順序">
+                                ▼
+                            </button>
+                        </div>
+
+                        <div class="flex flex-col items-center justify-center shrink-0">
+                            <span class="w-6 h-6 rounded-full ${spot.mustVisit ? 'bg-amber-500' : 'bg-sky-600'} text-white text-[11px] font-black flex items-center justify-center shadow">
+                                ${index + 1}
+                            </span>
+                        </div>
+
+                        <img src="${spot.img || 'https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?w=200&auto=format&fit=crop'}" onerror="this.src='https://placehold.co/200x200/0284c7/ffffff?text=景點'" class="w-11 h-11 object-cover rounded-xl shrink-0 shadow-sm">
+
+                        <div class="flex-1 min-w-0">
+                            <div class="flex items-center gap-1.5 flex-wrap">
+                                <h4 class="font-extrabold text-xs sm:text-sm text-slate-900 truncate">${spot.name}</h4>
+                                <span class="text-[9px] font-bold ${spot.type==='food' ? 'bg-amber-100 text-amber-900 border-amber-200' : 'bg-sky-50 text-sky-800 border-sky-100'} border px-1.5 py-0.2 rounded-md shrink-0">
+                                    ${spot.tag || '景點'}
+                                </span>
+                            </div>
+                            <p class="text-[10px] sm:text-xs text-slate-500 mt-0.5 line-clamp-1">${spot.desc || ''}</p>
+                            <span class="text-[9px] sm:text-[10px] text-slate-400 font-semibold block mt-0.5"><i class="fa-regular fa-clock mr-1"></i>停留 ${spot.duration || '45 mins'}</span>
+                        </div>
+
+                        <button onclick="removeSpotFromDay(${currentDay}, ${index})" class="text-slate-300 hover:text-rose-500 text-xs p-1.5 btn-bounce shrink-0" title="移除地點">
+                            <i class="fa-solid fa-trash-can"></i>
+                        </button>
+                    </div>
+                `;
+                container.insertAdjacentHTML('beforeend', itemHtml);
+            });
+
+            document.getElementById('daily-spot-count').innerText = `已排 ${spotIds.length} 個地點`;
+            
+            const estKm = calculateTotalDailyDistance(spotIds);
+            document.getElementById('daily-distance-text').innerText = `預估行車約 ${estKm} km`;
+
+            renderBooklet();
+        }
+
+        function removeSpotFromDay(day, index) {
+            if (customItinerary[day]) {
+                customItinerary[day].splice(index, 1);
+                renderItinerary();
+                updateGoogleMap();
+                showToast('已從行程中移除地點');
+            }
+        }
+
+        function updateGoogleMap() {
+            const spotIds = customItinerary[currentDay] || [];
+            const indicator = document.getElementById('map-day-indicator');
+            if (indicator) indicator.innerText = `Day ${currentDay} 路線圖 (${spotIds.length} 個點)`;
+
+            const iframe = document.getElementById('gmap-iframe');
+            if (!iframe) return;
+            
+            if (spotIds.length === 0) {
+                iframe.src = "https://maps.google.com/maps?q=Taitung,Taiwan&z=11&output=embed";
+                return;
+            }
+
+            const spotNames = spotIds.map(id => SPOTS_DATABASE[id] ? SPOTS_DATABASE[id].name : id);
+            
+            if (spotNames.length === 1) {
+                iframe.src = `https://maps.google.com/maps?q=${encodeURIComponent(spotNames[0])}&t=&z=13&ie=UTF8&iwloc=&output=embed`;
+            } else {
+                const origin = encodeURIComponent(spotNames[0]);
+                const destination = encodeURIComponent(spotNames[spotNames.length - 1]);
+                iframe.src = `https://maps.google.com/maps?saddr=${origin}&daddr=${destination}&output=embed`;
+            }
+        }
+
+        function openGoogleMapsNav() {
+            const spotIds = customItinerary[currentDay] || [];
+            if (spotIds.length === 0) {
+                showToast('本日尚無地點，請先新增地點');
+                return;
+            }
+
+            const spotNames = spotIds.map(id => SPOTS_DATABASE[id] ? SPOTS_DATABASE[id].name : id);
+            if (spotNames.length === 1) {
+                window.open(`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(spotNames[0])}`, '_blank');
+            } else {
+                const origin = encodeURIComponent(spotNames[0]);
+                const destination = encodeURIComponent(spotNames[spotNames.length - 1]);
+                const waypoints = spotNames.slice(1, -1).map(n => encodeURIComponent(n)).join('|');
+                window.open(`https://www.google.com/maps/dir/?api=1&origin=${origin}&destination=${destination}&waypoints=${waypoints}&travelmode=driving`, '_blank');
+            }
+        }
+
+        function openInGoogleMapsApp() {
+            openGoogleMapsNav();
+        }
+
+        function renderLibraryGrid(filterCat = 'all', searchQuery = '') {
+            const grid = document.getElementById('library-grid-container');
+            if (!grid) return;
+            grid.innerHTML = '';
+
+            ['all', 'food', 'must_visit', 'taitung_city', 'taitung_valley', 'tainan'].forEach(cat => {
+                const btn = document.getElementById(`cat-btn-${cat}`);
+                if (btn) {
+                    if (cat === filterCat) {
+                        btn.className = "cat-btn btn-bounce px-3.5 py-1.5 rounded-full bg-sky-600 text-white font-extrabold shrink-0 shadow-sm";
+                    } else {
+                        btn.className = "cat-btn btn-bounce px-3.5 py-1.5 rounded-full bg-white/80 text-slate-700 border border-slate-200 font-medium shrink-0";
+                    }
+                }
+            });
+
+            Object.values(SPOTS_DATABASE).forEach(spot => {
+                if (filterCat !== 'all') {
+                    if (filterCat === 'must_visit' && !spot.mustVisit) return;
+                    if (filterCat === 'food' && spot.type !== 'food') return;
+                    if (filterCat !== 'must_visit' && filterCat !== 'food' && spot.category !== filterCat) return;
+                }
+
+                if (searchQuery.trim() !== '') {
+                    const q = searchQuery.toLowerCase();
+                    if (!spot.name.toLowerCase().includes(q) && !spot.desc.toLowerCase().includes(q)) return;
+                }
+
+                const cardHtml = `
+                    <div class="bg-white/95 border border-slate-200/80 rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition flex flex-col justify-between">
+                        <div class="relative h-32 overflow-hidden bg-slate-100">
+                            <img src="${spot.img || 'https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?w=400&auto=format&fit=crop'}" onerror="this.src='https://placehold.co/400x200/0284c7/ffffff?text=美食景點'" class="w-full h-full object-cover transition-transform duration-300 hover:scale-105">
+                            <span class="absolute top-2 right-2 text-[9px] font-extrabold ${spot.type==='food'?'bg-amber-500 text-white':'bg-sky-600 text-white'} px-2 py-0.5 rounded-full shadow">
+                                ${spot.tag || (spot.type==='food'?'在地美食':'景點')}
+                            </span>
+                        </div>
+                        
+                        <div class="p-3 flex-1 flex flex-col justify-between gap-2">
+                            <div>
+                                <h4 class="font-extrabold text-xs sm:text-sm text-slate-900 truncate">${spot.name}</h4>
+                                <p class="text-[10px] sm:text-xs text-slate-500 leading-normal line-clamp-2 mt-0.5">${spot.desc}</p>
+                            </div>
+
+                            <div class="pt-2 border-t border-slate-100 flex items-center justify-between gap-1">
+                                <span class="text-[9px] text-slate-400 font-medium"><i class="fa-regular fa-clock mr-1"></i>${spot.duration}</span>
+                                
+                                <button onclick="quickAddSpotToCurrentDay('${spot.id}')" class="bg-sky-600 hover:bg-sky-700 text-white font-extrabold text-[10px] px-2.5 py-1.5 rounded-xl btn-bounce flex items-center gap-0.5 shadow-sm">
+                                    <i class="fa-solid fa-plus"></i> 加至 Day ${currentDay}
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                grid.insertAdjacentHTML('beforeend', cardHtml);
+            });
+        }
+
+        function filterModalCategory(cat) {
+            renderLibraryGrid(cat);
+        }
+
+        function searchSpots() {
+            const query = document.getElementById('spot-search-input').value;
+            renderLibraryGrid('all', query);
+        }
+
+        function quickAddSpotToCurrentDay(spotId) {
+            if (!customItinerary[currentDay]) customItinerary[currentDay] = [];
+            customItinerary[currentDay].push(spotId);
+            renderItinerary();
+            updateGoogleMap();
+            showToast(`已成功新增【${SPOTS_DATABASE[spotId]?.name || '地點'}】至 Day ${currentDay}`);
+        }
+
+        async function sendAiMessage() {
+            const inputEl = document.getElementById('ai-user-input');
+            const prompt = inputEl.value.trim();
+            if (!prompt) return;
+
+            inputEl.value = '';
+            appendAiChatMessage('user', prompt);
+
+            const btnSend = document.getElementById('btn-send-ai');
+            btnSend.disabled = true;
+            btnSend.innerHTML = `<i class="fa-solid fa-spinner animate-spin"></i> 思考中`;
+
+            try {
+                const systemPrompt = `你是花東台南自駕專家導遊。請用繁體中文極簡回答（120字以內），簡明扼要重點切入。`;
+                const apiKey = "";
+                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${apiKey}`;
+
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        contents: [{ parts: [{ text: prompt }] }],
+                        systemInstruction: { parts: [{ text: systemPrompt }] },
+                        generationConfig: { maxOutputTokens: 250 }
+                    })
+                });
+
+                const data = await response.json();
+                const aiText = data?.candidates?.[0]?.content?.parts?.[0]?.text || "建議品嚐傳媽媽家常菜、悟饕池上便當、大武阿梅海產與國華街牛肉湯！";
+                
+                appendAiChatMessage('ai', aiText, prompt);
+            } catch (err) {
+                console.error(err);
+                appendAiChatMessage('ai', "推薦造訪枋山傳媽媽家常菜、悟饕池上飯包故事館與大武阿梅海產！");
+            } finally {
+                btnSend.disabled = false;
+                btnSend.innerHTML = `<i class="fa-solid fa-paper-plane"></i> 傳送`;
+            }
+        }
+
+        function askAiPrompt(text) {
+            document.getElementById('ai-user-input').value = text;
+            sendAiMessage();
+        }
+
+        function appendAiChatMessage(sender, text, rawPrompt = '') {
+            const container = document.getElementById('ai-chat-container');
+            if (!container) return;
+            const isUser = sender === 'user';
+
+            let addCardBtnHtml = '';
+            if (!isUser) {
+                addCardBtnHtml = `
+                    <div class="mt-2 pt-2 border-t border-slate-100 flex items-center justify-between">
+                        <span class="text-[9px] text-sky-600 font-bold">✨ 想新增此地點至行程嗎？</span>
+                        <button onclick="openGoogleSearchModalWithQuery('${encodeURIComponent(rawPrompt.slice(0, 15))}')" class="bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold text-[10px] px-2.5 py-1 rounded-xl btn-bounce shadow-sm">
+                            <i class="fa-brands fa-google mr-1"></i> 地圖匯入
+                        </button>
+                    </div>
+                `;
+            }
+
+            const msgHtml = `
+                <div class="flex gap-2.5 items-start ${isUser ? 'flex-row-reverse' : ''}">
+                    <div class="w-7 h-7 rounded-full ${isUser ? 'bg-slate-900' : 'bg-sky-600'} text-white flex items-center justify-center text-xs shrink-0 mt-0.5 shadow">
+                        <i class="fa-solid ${isUser ? 'fa-user' : 'fa-robot'}"></i>
+                    </div>
+                    <div class="${isUser ? 'bg-sky-600 text-white rounded-tr-none' : 'bg-white text-slate-700 border border-slate-200/80 rounded-tl-none'} p-3 rounded-2xl shadow-sm text-xs max-w-[85%] leading-relaxed">
+                        ${text.replace(/\n/g, '<br>')}
+                        ${addCardBtnHtml}
+                    </div>
+                </div>
+            `;
+            container.insertAdjacentHTML('beforeend', msgHtml);
+            container.scrollTop = container.scrollHeight;
+        }
+
+        function openGoogleSearchModalWithQuery(encodedQuery) {
+            openGoogleSearchModal();
+            document.getElementById('gmap-query-input').value = decodeURIComponent(encodedQuery);
+            executeSpotSearch();
+        }
+
+        function openGoogleSearchModal() {
+            document.getElementById('google-search-modal').classList.remove('hidden');
+        }
+
+        function closeGoogleSearchModal() {
+            document.getElementById('google-search-modal').classList.add('hidden');
+        }
+
+        function handleGoogleInput(val) {
+            if (val.trim().length > 2) {
+                let spotName = val.trim();
+                if (val.includes('maps') || val.includes('http') || val.includes('goo.gl')) {
+                    if (val.includes('place/')) {
+                        const parts = val.split('place/')[1].split('/');
+                        spotName = decodeURIComponent(parts[0].replace(/\+/g, ' '));
+                    } else {
+                        spotName = "Google 地圖匯入地點";
+                    }
+                }
+                showParsedResult(spotName, "Google 地圖連結/關鍵字解析成功");
+            }
+        }
+
+        function executeSpotSearch() {
+            const query = document.getElementById('gmap-query-input').value.trim() || document.getElementById('gmap-link-input').value.trim();
+            if (!query) {
+                showToast('請輸入地點名稱（如：傳媽媽家常菜）');
+                return;
+            }
+            showParsedResult(query, "Google 地圖搜尋與定位成功");
+        }
+
+        function showParsedResult(name, desc) {
+            pendingImportSpot = {
+                id: 'custom_' + Date.now(),
+                name: name,
+                lat: 22.75,
+                lng: 121.15,
+                category: 'taitung_city',
+                type: 'spot',
+                tag: '自訂地點',
+                duration: '45 mins',
+                desc: desc,
+                mustVisit: false,
+                img: 'https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?w=400&auto=format&fit=crop'
+            };
+
+            document.getElementById('res-spot-name').innerText = name;
+            document.getElementById('res-spot-desc').innerText = desc;
+            document.getElementById('import-result-card').classList.remove('hidden');
+        }
+
+        function confirmImportSpot() {
+            if (!pendingImportSpot) return;
+
+            const day = parseInt(document.getElementById('import-target-day').value);
+            const cat = document.getElementById('import-category').value;
+
+            pendingImportSpot.type = cat;
+            pendingImportSpot.tag = cat === 'food' ? '🍜 在地美食' : '🏞️ 景點風光';
+
+            SPOTS_DATABASE[pendingImportSpot.id] = pendingImportSpot;
+
+            if (!customItinerary[day]) customItinerary[day] = [];
+            customItinerary[day].push(pendingImportSpot.id);
+
+            closeGoogleSearchModal();
+            setActiveDay(day);
+            renderBooklet();
+            showToast(`已成功新增【${pendingImportSpot.name}】至 Day ${day}！`);
+            pendingImportSpot = null;
+        }
+
+        function renderBooklet() {
+            const container = document.getElementById('booklet-daily-content');
+            if (!container) return;
+            container.innerHTML = '';
+
+            const dayTitles = {
+                1: 'Day 1 (10/23 五) - 07:00 台中啟程 ➔ 枋山午餐 ➔ 台東市區美食夜遊 (宿：丰綺會館)',
+                2: 'Day 2 (10/24 六) - 初鹿牧場 ➔ 悟饕池上飯包故事館 ➔ 伯朗大道 ➔ 回家食間 (宿：丰綺會館)',
+                3: 'Day 3 (10/25 日) - 多良車站 ➔ 大武/金崙美食 ➔ 移動至台南入住 (宿：日日和民宿)',
+                4: 'Day 4 (10/26 一) - 台南市區美食景點自由行 ➔ 預計 15:00 賦歸返抵台中保運 7-11（終點）'
+            };
+
+            for (let d = 1; d <= 4; d++) {
+                const spots = customItinerary[d] || [];
+                const spotElementsHtml = spots.map((id, idx) => {
+                    const spot = SPOTS_DATABASE[id] || { name: '景點', desc: '', duration: '45 mins' };
+                    return `
+                        <div class="flex items-center gap-2.5 text-xs text-slate-700 py-1.5 border-b border-slate-100">
+                            <span class="w-5 h-5 rounded-full bg-sky-100 text-sky-800 font-extrabold flex items-center justify-center text-[10px] shrink-0">${idx+1}</span>
+                            <span class="font-extrabold text-slate-900">${spot.name}</span>
+                            <span class="text-slate-400 text-[10px]">(${spot.duration})</span>
+                            <span class="text-slate-500 text-[10px] truncate hidden sm:inline">- ${spot.desc}</span>
+                        </div>
+                    `;
+                }).join('');
+
+                const blockHtml = `
+                    <div class="bg-slate-50/90 border border-slate-200/80 rounded-2xl p-3.5">
+                        <h3 class="font-black text-slate-900 text-xs sm:text-sm mb-2 text-sky-950 flex items-center justify-between">
+                            <span>${dayTitles[d]}</span>
+                            <span class="text-[10px] text-slate-500 font-normal">${spots.length} 個行程點</span>
+                        </h3>
+                        <div class="space-y-1">
+                            ${spotElementsHtml || '<p class="text-xs text-slate-400 italic">尚無排定地點</p>'}
+                        </div>
+                    </div>
+                `;
+                container.insertAdjacentHTML('beforeend', blockHtml);
+            }
+        }
+
+        function handleMobilePrint() {
+            if (/Android|iPhone|iPad|iPod/i.test(navigator.userAgent)) {
+                openExportModal();
+                showToast('手機端已為您開啟純文字導覽手冊，可直接複製儲存！');
+            } else {
+                window.print();
+            }
+        }
+
+        function toggleMusicModal() {
+            document.getElementById('music-modal').classList.toggle('hidden');
+        }
+
+        function openExportModal() {
+            let summaryText = `🚗【台東台南 4天3夜 自由規劃自駕隨行手冊】\n📅 日期：10/23 (五) ~ 10/26 (一)\n🏨 住宿：Day 1-2 台東 丰綺會館 ｜ Day 3 台南 日日和民宿\n🏁 終點：Day 4 預計 15:00 返抵台中保運 7-11\n\n`;
+            
+            for (let d = 1; d <= 4; d++) {
+                summaryText += `📌 Day ${d}:\n`;
+                const spots = customItinerary[d] || [];
+                spots.forEach((id, idx) => {
+                    const s = SPOTS_DATABASE[id];
+                    summaryText += `  ${idx+1}. ${s ? s.name : id} (${s ? s.duration : '45m'})\n`;
+                });
+                summaryText += `\n`;
+            }
+
+            document.getElementById('export-text-preview').innerText = summaryText;
+            document.getElementById('export-modal').classList.remove('hidden');
+        }
+
+        function closeExportModal() {
+            document.getElementById('export-modal').classList.add('hidden');
+        }
+
+        function copyToClipboard() {
+            const text = document.getElementById('export-text-preview').innerText;
+            const textarea = document.createElement('textarea');
+            textarea.value = text;
+            document.body.appendChild(textarea);
+            textarea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textarea);
+            showToast('已成功複製 4天3夜 最新專屬行程手冊！');
+        }
+
+        function showToast(msg) {
+            const container = document.getElementById('toast-container');
+            if (!container) return;
+            const toast = document.createElement('div');
+            toast.className = 'bg-slate-900/90 backdrop-blur-md text-white text-xs font-bold px-4 py-2.5 rounded-2xl shadow-xl flex items-center gap-2 border border-white/20 transition-all transform duration-300 translate-y-[-10px] opacity-0 pointer-events-auto';
+            toast.innerHTML = `<i class="fa-solid fa-circle-check text-emerald-400"></i> ${msg}`;
+            container.appendChild(toast);
+
+            setTimeout(() => {
+                toast.classList.remove('translate-y-[-10px]', 'opacity-0');
+            }, 10);
+
+            setTimeout(() => {
+                toast.classList.add('opacity-0');
+                setTimeout(() => toast.remove(), 300);
+            }, 2500);
+        }
+    </script>
+</body>
+</html>
