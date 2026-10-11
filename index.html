@@ -51,7 +51,7 @@
         }
 
         .liquid-glass {
-            background: rgba(255, 255, 255, 0.82);
+            background: rgba(255, 255, 255, 0.85);
             backdrop-filter: blur(28px) saturate(190%);
             -webkit-backdrop-filter: blur(28px) saturate(190%);
             border: 1px solid rgba(255, 255, 255, 0.9);
@@ -59,11 +59,11 @@
                         inset 0 1px 1px 0 rgba(255, 255, 255, 0.95),
                         0 2px 4px -1px rgba(0, 0, 0, 0.02);
             border-radius: 20px;
-            transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
 
         .liquid-glass-dark {
-            background: rgba(15, 23, 42, 0.9);
+            background: rgba(15, 23, 42, 0.92);
             backdrop-filter: blur(24px) saturate(200%);
             -webkit-backdrop-filter: blur(24px) saturate(200%);
             border: 1px solid rgba(255, 255, 255, 0.18);
@@ -71,17 +71,40 @@
         }
 
         .btn-bounce {
-            transition: transform 0.18s cubic-bezier(0.34, 1.56, 0.64, 1), background-color 0.2s ease, box-shadow 0.2s ease;
+            transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), background-color 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease;
         }
         .btn-bounce:active {
-            transform: scale(0.93);
+            transform: scale(0.90);
+        }
+        .btn-bounce:hover {
+            transform: translateY(-2px) scale(1.02);
+        }
+
+        /* 提升主視圖轉場動畫 (淡入、上浮) */
+        .main-view {
+            animation: viewFadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+        @keyframes viewFadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(12px) scale(0.99);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        /* Modal 轉場 */
+        .modal-transition {
+            transition: opacity 0.35s cubic-bezier(0.16, 1, 0.3, 1), transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
 
         .sound-bar {
             display: inline-block;
             width: 3px;
             height: 12px;
-            background-color: #38bdf8;
+            background-color: #0284c7;
             border-radius: 3px;
             animation: soundwave 1.2s infinite ease-in-out;
         }
@@ -101,7 +124,7 @@
             header, nav, .no-print, .main-nav-bar { display: none !important; }
             body { background: white !important; overflow: visible !important; }
             .booklet-container { max-width: 100% !important; box-shadow: none !important; border: none !important; }
-            .main-view { display: block !important; }
+            .main-view { display: block !important; animation: none !important; }
         }
     </style>
 </head>
@@ -134,9 +157,10 @@
                 </div>
             </div>
 
-            <!-- Controls -->
+            <!-- Controls: Music & Export (AI Assistant removed) -->
             <div class="flex items-center gap-1.5 shrink-0">
-                <button onclick="toggleMusicModal()" class="btn-bounce text-xs bg-sky-50/90 hover:bg-sky-100 text-sky-900 font-extrabold px-2.5 py-1.5 rounded-xl border border-sky-200/80 flex items-center gap-1 shadow-sm">
+                <!-- Music Button -->
+                <button onclick="toggleMusicModal()" class="btn-bounce text-xs bg-sky-50/90 hover:bg-sky-100 text-sky-900 font-extrabold px-3 py-1.5 rounded-xl border border-sky-200/80 flex items-center gap-1.5 shadow-sm">
                     <i class="fa-solid fa-music text-sky-600 animate-bounce"></i>
                     <span class="hidden sm:inline">音樂</span>
                     <div id="sound-wave-anim" class="flex items-center gap-0.5 ml-0.5">
@@ -146,7 +170,8 @@
                     </div>
                 </button>
 
-                <button onclick="openExportModal()" class="btn-bounce text-xs bg-slate-900 hover:bg-slate-800 text-white font-extrabold px-2.5 py-1.5 rounded-xl shadow-sm flex items-center gap-1">
+                <!-- Export Button -->
+                <button onclick="openExportModal()" class="btn-bounce text-xs bg-slate-900 hover:bg-slate-800 text-white font-extrabold px-3 py-1.5 rounded-xl shadow-sm flex items-center gap-1.5">
                     <i class="fa-solid fa-share-nodes text-amber-400"></i>
                     <span class="hidden sm:inline">匯出</span>
                 </button>
@@ -166,7 +191,7 @@
                     <!-- Preset Selection & Day Switcher -->
                     <div class="pb-2.5 border-b border-slate-200/80 flex flex-col gap-2 shrink-0">
                         <div class="grid grid-cols-2 sm:grid-cols-4 gap-1.5">
-                            <button onclick="switchPreset('my_custom')" id="btn-preset-my_custom" class="preset-btn btn-bounce text-[10px] font-black py-1.5 px-1 rounded-xl border text-center bg-gradient-to-r from-amber-500 to-orange-500 text-white border-amber-500 shadow-sm">
+                            <button onclick="switchPreset('my_custom')" id="btn-preset-my_custom" style="background-color: #FCF6BE;" class="preset-btn btn-bounce text-[10px] font-black py-1.5 px-1 rounded-xl border border-amber-300 text-slate-900 text-center shadow-sm">
                                 👍 姐姐規劃的行程
                             </button>
                             <button onclick="switchPreset('photo')" id="btn-preset-photo" class="preset-btn btn-bounce text-[10px] font-bold py-1.5 px-1 rounded-xl border border-slate-200 bg-white/80 text-slate-600">
@@ -273,62 +298,7 @@
             </div>
         </div>
 
-        <!-- VIEW 3: Gemini AI 隨行助理 -->
-        <div id="view-ai" class="main-view hidden flex-1 flex-col min-h-full">
-            <div class="liquid-glass flex-1 flex flex-col p-3 sm:p-4 shadow-sm">
-                
-                <div class="pb-2.5 border-b border-slate-200/80 flex items-center justify-between shrink-0">
-                    <div class="flex items-center gap-2">
-                        <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-sky-500 via-teal-400 to-indigo-500 flex items-center justify-center text-white shadow-sm">
-                            <i class="fa-solid fa-wand-magic-sparkles text-sm animate-pulse"></i>
-                        </div>
-                        <div>
-                            <h2 class="font-extrabold text-slate-900 text-xs sm:text-sm flex items-center gap-1">
-                                Gemini AI 隨行助理
-                                <span class="bg-sky-100 text-sky-800 text-[9px] font-bold px-1.5 py-0.2 rounded-full">Flash</span>
-                            </h2>
-                            <p class="text-[10px] text-slate-500">極速推薦美食祕境與即時行程調整</p>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="py-2 flex items-center gap-1.5 overflow-x-auto custom-scrollbar shrink-0 text-[11px]">
-                    <button onclick="askAiPrompt('推薦台東枋山與大武附近海鮮小吃')" class="btn-bounce bg-amber-50 hover:bg-amber-100 text-amber-950 font-bold px-2.5 py-1 rounded-full border border-amber-200 shrink-0">
-                        🐟 南迴海鮮
-                    </button>
-                    <button onclick="askAiPrompt('介紹悟饕池上飯包故事館與伯朗大道騎單車資訊')" class="btn-bounce bg-sky-50 hover:bg-sky-100 text-sky-900 font-bold px-2.5 py-1 rounded-full border border-sky-200 shrink-0">
-                        🌾 池上單車
-                    </button>
-                    <button onclick="askAiPrompt('下雨天台東市區與池上有哪些雨天備案？')" class="btn-bounce bg-emerald-50 hover:bg-emerald-100 text-emerald-900 font-bold px-2.5 py-1 rounded-full border border-emerald-200 shrink-0">
-                        🌧️ 雨天備案
-                    </button>
-                    <button onclick="askAiPrompt('推薦台南日日和民宿周邊國華街美食')" class="btn-bounce bg-purple-50 hover:bg-purple-100 text-purple-900 font-bold px-2.5 py-1 rounded-full border border-purple-200 shrink-0">
-                        🍢 國華街美食
-                    </button>
-                </div>
-
-                <div id="ai-chat-container" class="flex-1 overflow-y-auto custom-scrollbar space-y-2.5 p-2.5 bg-slate-50/70 rounded-xl border border-slate-100 my-1 min-h-[200px]">
-                    <div class="flex gap-2 items-start">
-                        <div class="w-7 h-7 rounded-full bg-sky-600 text-white flex items-center justify-center text-xs shrink-0 shadow">
-                            <i class="fa-solid fa-robot"></i>
-                        </div>
-                        <div class="bg-white border border-slate-200/80 p-2.5 rounded-2xl rounded-tl-none shadow-sm text-xs text-slate-700 max-w-[88%] leading-relaxed">
-                            您好😊！我是您的 台東台南  四天三夜   AI 隨行助理 🤖！ <br>
-                            已為您同步載入 10/23(五) ~ 10/26(一) 所有景點行程 👏
-                        </div>
-                    </div>
-                </div>
-
-                <div class="pt-2 flex items-center gap-1.5 shrink-0">
-                    <input type="text" id="ai-user-input" onkeydown="if(event.key==='Enter') sendAiMessage()" placeholder="向 AI 詢問景點、美食或備案..." class="flex-1 bg-white border border-slate-200 text-xs rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-sky-500 shadow-sm">
-                    <button onclick="sendAiMessage()" id="btn-send-ai" class="bg-sky-600 hover:bg-sky-700 text-white font-extrabold px-3.5 py-2 rounded-xl btn-bounce text-xs flex items-center gap-1 shadow-sm shrink-0">
-                        <i class="fa-solid fa-paper-plane"></i> 傳送
-                    </button>
-                </div>
-            </div>
-        </div>
-
-        <!-- VIEW 4: 當季活動與情報 -->
+        <!-- VIEW 3: 當季活動與情報 -->
         <div id="view-events" class="main-view hidden flex-1 flex-col min-h-full">
             <div class="liquid-glass flex-1 p-3 sm:p-4 space-y-3 shadow-sm">
                 <div class="border-b border-slate-200 pb-2 flex items-center justify-between">
@@ -392,7 +362,7 @@
             </div>
         </div>
 
-        <!-- VIEW 5: 4D3N 導覽手冊 -->
+        <!-- VIEW 4: 4D3N 導覽手冊 -->
         <div id="view-booklet" class="main-view hidden flex-1 flex-col min-h-full">
             <div class="liquid-glass flex-1 p-3.5 md:p-5 space-y-3 booklet-container bg-white/90">
                 
@@ -405,11 +375,6 @@
                         <h2 class="font-black text-sm sm:text-lg">台東台南山海慢遊 • 隨行手冊</h2>
                         <p class="text-[10px] text-slate-300 mt-0.5">集合：Day 1 07:00 台中保運 7-11 ｜ 終點：Day 4 15:00 返抵台中</p>
                     </div>
-                    <div class="flex items-center gap-1.5 no-print shrink-0">
-                        <button onclick="handleMobilePrint()" class="btn-bounce bg-emerald-500 hover:bg-emerald-600 text-white font-extrabold px-3 py-1.5 rounded-xl text-xs flex items-center gap-1 shadow">
-                            <i class="fa-solid fa-print"></i> 儲存 PDF
-                        </button>
-                    </div>
                 </div>
 
                 <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 text-xs">
@@ -419,7 +384,7 @@
                     </div>
                     <div class="bg-emerald-50 border border-emerald-200 p-2.5 rounded-xl">
                         <span class="font-bold text-emerald-950 block mb-0.5"><i class="fa-solid fa-utensils mr-1"></i> 餐廳規劃</span>
-                        <p class="text-slate-600 text-[11px]">已整合傳媽媽家常菜、榕樹下米苔目、阿梅海產與牛肉麵。</p>
+                        <p class="text-slate-600 text-[11px]">已整合傳媽媽家常菜、榕樹下米苔目、阿梅海產與國華街牛肉湯。</p>
                     </div>
                     <div class="bg-amber-50 border border-amber-200 p-2.5 rounded-xl">
                         <span class="font-bold text-amber-950 block mb-0.5"><i class="fa-solid fa-bed mr-1"></i> 住宿安排</span>
@@ -436,32 +401,28 @@
     </main>
 
     <!-- Floating Navigation Bar -->
-    <nav class="main-nav-bar fixed bottom-2.5 left-1/2 -translate-x-1/2 z-40 w-[96%] max-w-md liquid-glass-dark rounded-full p-1 flex justify-around items-center text-[10px] font-bold text-slate-300">
-        <button onclick="switchMainTab('itinerary')" id="nav-btn-itinerary" class="nav-btn flex-1 py-1 px-1 rounded-full transition flex flex-col items-center justify-center gap-0.5 bg-sky-600 text-white shadow-md font-bold">
+    <nav class="main-nav-bar fixed bottom-2.5 left-1/2 -translate-x-1/2 z-40 w-[96%] max-w-md liquid-glass-dark rounded-full p-1 flex justify-around items-center text-[10px] font-bold text-slate-300 shadow-2xl">
+        <button onclick="switchMainTab('itinerary')" id="nav-btn-itinerary" class="nav-btn flex-1 py-1 px-1 rounded-full transition-all duration-300 flex flex-col items-center justify-center gap-0.5 bg-sky-600 text-white shadow-md font-bold">
             <i class="fa-solid fa-calendar-day text-sm"></i>
             <span>每日行程</span>
         </button>
-        <button onclick="switchMainTab('library')" id="nav-btn-library" class="nav-btn flex-1 py-1 px-1 rounded-full transition flex flex-col items-center justify-center gap-0.5 text-slate-300 hover:text-sky-300 font-bold">
+        <button onclick="switchMainTab('library')" id="nav-btn-library" class="nav-btn flex-1 py-1 px-1 rounded-full transition-all duration-300 flex flex-col items-center justify-center gap-0.5 text-slate-300 hover:text-sky-300 font-bold">
             <i class="fa-solid fa-utensils text-sm text-amber-400"></i>
             <span>美食景點</span>
         </button>
-        <button onclick="switchMainTab('ai')" id="nav-btn-ai" class="nav-btn flex-1 py-1 px-1 rounded-full transition flex flex-col items-center justify-center gap-0.5 text-slate-300 hover:text-sky-300 font-bold">
-            <i class="fa-solid fa-wand-magic-sparkles text-sm text-emerald-400"></i>
-            <span>AI 隨行助理</span>
-        </button>
-        <button onclick="switchMainTab('events')" id="nav-btn-events" class="nav-btn flex-1 py-1 px-1 rounded-full transition flex flex-col items-center justify-center gap-0.5 text-slate-300 hover:text-sky-300 font-bold">
+        <button onclick="switchMainTab('events')" id="nav-btn-events" class="nav-btn flex-1 py-1 px-1 rounded-full transition-all duration-300 flex flex-col items-center justify-center gap-0.5 text-slate-300 hover:text-sky-300 font-bold">
             <i class="fa-solid fa-wheat-awn text-sm text-amber-300"></i>
             <span>當季活動</span>
         </button>
-        <button onclick="switchMainTab('booklet')" id="nav-btn-booklet" class="nav-btn flex-1 py-1 px-1 rounded-full transition flex flex-col items-center justify-center gap-0.5 text-slate-300 hover:text-sky-300 font-bold">
+        <button onclick="switchMainTab('booklet')" id="nav-btn-booklet" class="nav-btn flex-1 py-1 px-1 rounded-full transition-all duration-300 flex flex-col items-center justify-center gap-0.5 text-slate-300 hover:text-sky-300 font-bold">
             <i class="fa-solid fa-book-open text-sm text-sky-400"></i>
             <span>導覽手冊</span>
         </button>
     </nav>
 
     <!-- MODAL: Google Maps Rating & Info Preview Modal -->
-    <div id="spot-detail-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-md z-[1100] flex items-center justify-center p-3.5 hidden">
-        <div class="liquid-glass shadow-2xl w-full max-w-md border border-white p-4 flex flex-col gap-3 relative animate-in fade-in zoom-in duration-200">
+    <div id="spot-detail-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-md z-[1300] flex items-center justify-center p-3.5 hidden modal-transition opacity-0 pointer-events-none">
+        <div class="liquid-glass shadow-2xl w-full max-w-md border border-white p-4 flex flex-col gap-3 relative transform scale-95 transition-all duration-300">
             <div class="flex justify-between items-center pb-2 border-b border-slate-100">
                 <div class="flex items-center gap-2">
                     <span id="modal-spot-tag" class="text-[10px] font-black bg-sky-600 text-white px-2 py-0.5 rounded-full">熱門</span>
@@ -520,8 +481,8 @@
     </div>
 
     <!-- MODAL: Audio Player Dialog -->
-    <div id="music-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-md z-[1000] flex items-center justify-center p-4 hidden">
-        <div class="liquid-glass shadow-2xl w-full max-w-sm border border-white p-4 flex flex-col gap-3">
+    <div id="music-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-md z-[1300] flex items-center justify-center p-4 hidden modal-transition opacity-0 pointer-events-none">
+        <div class="liquid-glass shadow-2xl w-full max-w-sm border border-white p-4 flex flex-col gap-3 transform scale-95 transition-all duration-300" id="music-modal-content">
             <div class="flex justify-between items-center">
                 <h3 class="font-black text-slate-900 text-sm flex items-center gap-1.5">
                     <i class="fa-solid fa-compact-disc text-sky-600 text-base animate-spin" style="animation-duration: 6s;"></i> 自駕慢遊主題曲
@@ -550,11 +511,11 @@
     </div>
 
     <!-- MODAL: Google Maps Link Import & Dynamic Location Search Modal -->
-    <div id="google-search-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-md z-[1000] flex items-center justify-center p-3.5 hidden">
-        <div class="liquid-glass shadow-2xl w-full max-w-md border border-white p-4 flex flex-col gap-2.5">
+    <div id="google-search-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-md z-[1300] flex items-center justify-center p-3.5 hidden modal-transition opacity-0 pointer-events-none">
+        <div class="liquid-glass shadow-2xl w-full max-w-md border border-white p-4 flex flex-col gap-2.5 transform scale-95 transition-all duration-300" id="google-search-modal-content">
             <div class="flex justify-between items-center pb-2 border-b border-slate-100">
                 <h3 class="font-black text-slate-900 text-sm flex items-center gap-1.5">
-                    <i class="fa-brands fa-google text-emerald-600"></i> Google 地圖快速匯入地點
+                    <i class="fa-brands fa-google text-emerald-600"></i> Google 地圖快速新增地點
                 </h3>
                 <button onclick="closeGoogleSearchModal()" class="w-7 h-7 rounded-full bg-slate-100 text-slate-600 flex items-center justify-center btn-bounce">
                     <i class="fa-solid fa-xmark"></i>
@@ -564,13 +525,13 @@
             <div class="space-y-2.5 text-xs">
                 <div class="bg-sky-50/90 border border-sky-200 p-2.5 rounded-xl">
                     <label class="block font-extrabold text-sky-950 mb-1">
-                        <i class="fa-solid fa-link text-sky-600 mr-1"></i> 貼上 Google 地圖 App 分享網址或名稱
+                        <i class="fa-solid fa-link text-sky-600 mr-1"></i> 輸入台東或台南景點、美食名稱
                     </label>
-                    <input type="text" id="gmap-link-input" oninput="handleGoogleInput(this.value)" placeholder="例如 maps.app.goo.gl/... 或 傳媽媽家常菜" class="w-full bg-white border border-sky-200 rounded-lg p-2 outline-none text-xs focus:ring-2 focus:ring-sky-500">
+                    <input type="text" id="gmap-link-input" oninput="handleGoogleInput(this.value)" placeholder="例如：傳媽媽家常菜、榕樹下米苔目" class="w-full bg-white border border-sky-200 rounded-lg p-2 outline-none text-xs focus:ring-2 focus:ring-sky-500">
                 </div>
 
                 <div class="flex gap-2 items-center">
-                    <input type="text" id="gmap-query-input" placeholder="例如：傳媽媽家常菜、悟饕池上飯包" class="flex-1 border border-slate-200 rounded-lg p-2 outline-none text-xs focus:ring-2 focus:ring-sky-500">
+                    <input type="text" id="gmap-query-input" placeholder="例如：國華街牛肉湯、池上便當" class="flex-1 border border-slate-200 rounded-lg p-2 outline-none text-xs focus:ring-2 focus:ring-sky-500">
                     <button onclick="executeSpotSearch()" class="bg-sky-600 hover:bg-sky-700 text-white font-bold px-3 py-2 rounded-lg btn-bounce flex items-center gap-1 shrink-0">
                         <i class="fa-solid fa-magnifying-glass"></i> 搜尋
                     </button>
@@ -582,7 +543,7 @@
                             <h4 class="font-extrabold text-emerald-950 text-xs sm:text-sm" id="res-spot-name">地點名稱</h4>
                             <p class="text-[11px] text-emerald-800 mt-0.5" id="res-spot-desc">地址與簡介...</p>
                         </div>
-                        <span class="bg-emerald-200 text-emerald-900 text-[9px] font-bold px-2 py-0.5 rounded-full shrink-0">解析成功</span>
+                        <span class="bg-emerald-200 text-emerald-900 text-[9px] font-bold px-2 py-0.5 rounded-full shrink-0">準備新增</span>
                     </div>
 
                     <div class="grid grid-cols-2 gap-2 mt-0.5">
@@ -613,9 +574,9 @@
         </div>
     </div>
 
-    <!-- MODAL: Export & Mobile PDF Print Modal -->
-    <div id="export-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-md z-[1000] flex items-center justify-center p-3.5 hidden">
-        <div class="liquid-glass shadow-2xl w-full max-w-xl max-h-[85vh] flex flex-col overflow-hidden border border-white">
+    <!-- MODAL: Export Modal -->
+    <div id="export-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-md z-[1300] flex items-center justify-center p-3.5 hidden modal-transition opacity-0 pointer-events-none">
+        <div class="liquid-glass shadow-2xl w-full max-w-xl max-h-[85vh] flex flex-col overflow-hidden border border-white transform scale-95 transition-all duration-300" id="export-modal-content">
             <div class="p-3.5 bg-slate-900 text-white flex justify-between items-center">
                 <h3 class="font-extrabold text-xs sm:text-sm flex items-center gap-1.5">
                     <i class="fa-solid fa-paper-plane text-amber-400"></i> 4天3夜 行程複製與匯出
@@ -625,7 +586,7 @@
                 </button>
             </div>
             <div class="p-3.5 flex-1 overflow-y-auto custom-scrollbar space-y-2.5 text-xs">
-                <p class="text-slate-600 font-medium">已為您即時同步 4 天 3 夜最新自由規劃行程文字檔：</p>
+                <p class="text-slate-600 font-medium">已為您即時同步 4 天 3 夜最新台東台南旅遊行程文字檔：</p>
                 <div class="bg-slate-900 text-emerald-400 p-3 rounded-xl font-mono text-[11px] leading-relaxed overflow-x-auto border border-slate-800 max-h-56" id="export-text-preview"></div>
             </div>
             <div class="p-2.5 bg-slate-100/90 border-t border-slate-200 flex flex-wrap gap-2 justify-end">
@@ -766,9 +727,9 @@
                 img: 'https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=400&auto=format&fit=crop'
             },
             'tainan_free_tour': {
-                id: 'tainan_free_tour', name: '台南市區景點/美食自由行', lat: 22.9975, lng: 120.1970,
+                id: 'tainan_free_tour', name: '台南國華街小吃與府城古蹟漫遊', lat: 22.9975, lng: 120.1970,
                 category: 'tainan', type: 'spot', tag: '🍡 府城巡禮', duration: '3 hrs',
-                desc: '國華街碗粿春捲、赤崁樓古蹟慢步、文章牛肉湯漫遊散策。', mustVisit: true,
+                desc: '國華街碗粿春捲、赤崁樓古蹟散策、文章牛肉湯漫遊。', mustVisit: true,
                 rating: 4.7, reviews: '25,600', address: '台南市中西區國華街',
                 img: 'https://images.unsplash.com/photo-1569718212165-3a8278d5f624?w=400&auto=format&fit=crop'
             }
@@ -842,8 +803,9 @@
         }
 
         function switchMainTab(tabName) {
+            if (currentTab === tabName) return;
             currentTab = tabName;
-            const tabs = ['itinerary', 'library', 'ai', 'events', 'booklet'];
+            const tabs = ['itinerary', 'library', 'events', 'booklet'];
 
             tabs.forEach(t => {
                 const viewEl = document.getElementById(`view-${t}`);
@@ -852,18 +814,18 @@
                 if (viewEl) {
                     if (t === tabName) {
                         viewEl.classList.remove('hidden');
-                        viewEl.classList.add('flex');
+                        viewEl.classList.add('flex', 'main-view');
                     } else {
                         viewEl.classList.add('hidden');
-                        viewEl.classList.remove('flex');
+                        viewEl.classList.remove('flex', 'main-view');
                     }
                 }
 
                 if (btnEl) {
                     if (t === tabName) {
-                        btnEl.className = "nav-btn flex-1 py-1 px-1 rounded-full transition flex flex-col items-center justify-center gap-0.5 bg-sky-600 text-white shadow-md font-bold";
+                        btnEl.className = "nav-btn flex-1 py-1 px-1 rounded-full transition-all duration-300 flex flex-col items-center justify-center gap-0.5 bg-sky-600 text-white shadow-md font-bold scale-105";
                     } else {
-                        btnEl.className = "nav-btn flex-1 py-1 px-1 rounded-full transition flex flex-col items-center justify-center gap-0.5 text-slate-300 hover:text-sky-300 font-bold";
+                        btnEl.className = "nav-btn flex-1 py-1 px-1 rounded-full transition-all duration-300 flex flex-col items-center justify-center gap-0.5 text-slate-300 hover:text-sky-300 font-bold scale-100";
                     }
                 }
             });
@@ -883,9 +845,9 @@
                 const btn = document.getElementById(`day-tab-${i}`);
                 if (btn) {
                     if (i === day) {
-                        btn.className = "day-tab btn-bounce py-1.5 rounded-xl text-center text-xs font-black transition bg-sky-600 text-white shadow-sm";
+                        btn.className = "day-tab btn-bounce py-1.5 rounded-xl text-center text-xs font-black transition bg-sky-600 text-white shadow-sm scale-105";
                     } else {
-                        btn.className = "day-tab btn-bounce py-1.5 rounded-xl text-center text-xs font-black transition bg-white/80 text-slate-600 hover:bg-white border border-slate-200/60";
+                        btn.className = "day-tab btn-bounce py-1.5 rounded-xl text-center text-xs font-black transition bg-white/80 text-slate-600 hover:bg-white border border-slate-200/60 scale-100";
                     }
                 }
             }
@@ -901,8 +863,10 @@
                 const btn = document.getElementById(`btn-preset-${p}`);
                 if (btn) {
                     if (p === presetKey) {
-                        btn.className = "preset-btn btn-bounce text-[10px] font-black py-1.5 px-1 rounded-xl border text-center bg-gradient-to-r from-amber-500 to-orange-500 text-white border-amber-500 shadow-sm";
+                        btn.style.backgroundColor = '#FCF6BE';
+                        btn.className = "preset-btn btn-bounce text-[10px] font-black py-1.5 px-1 rounded-xl border border-amber-300 text-slate-900 text-center shadow-sm";
                     } else {
+                        btn.style.backgroundColor = '';
                         btn.className = "preset-btn btn-bounce text-[10px] font-bold py-1.5 px-1 rounded-xl border border-slate-200 bg-white/80 text-slate-600";
                     }
                 }
@@ -972,8 +936,7 @@
                 const isLast = index === spotIds.length - 1;
 
                 const itemHtml = `
-                    <div class="flex items-center gap-2 bg-white/95 border border-slate-200/90 p-2 rounded-2xl shadow-sm hover:shadow-md transition">
-                        <!-- Up/Down Buttons -->
+                    <div class="flex items-center gap-2 bg-white/95 border border-slate-200/90 p-2 rounded-2xl shadow-sm hover:shadow-md transition duration-200 transform hover:-translate-y-0.5">
                         <div class="flex flex-col gap-0.5 shrink-0">
                             <button onclick="moveSpotUp(${currentDay}, ${index})" ${isFirst ? 'disabled class="opacity-25 cursor-not-allowed text-slate-400 p-0.5 text-[9px]"' : 'class="text-sky-600 hover:text-sky-800 p-0.5 text-[9px] btn-bounce font-extrabold"'} title="上移">
                                 ▲
@@ -989,7 +952,6 @@
                             </span>
                         </div>
 
-                        <!-- Clickable Image/Thumbnail to preview Google Maps Info -->
                         <div onclick="openSpotDetailModalById('${id}')" class="w-10 h-10 rounded-xl overflow-hidden shrink-0 shadow-sm cursor-pointer relative group">
                             <img src="${spot.img || 'https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?w=200&auto=format&fit=crop'}" onerror="this.src='https://placehold.co/200x200/0284c7/ffffff?text=景點'" class="w-full h-full object-cover group-hover:scale-110 transition duration-300">
                             <div class="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 flex items-center justify-center text-white text-[9px]">
@@ -1033,7 +995,6 @@
             }
         }
 
-        // Feature: Google Maps Info & Rating Preview Modal
         function openSpotDetailModalById(spotId) {
             const spot = SPOTS_DATABASE[spotId];
             if (!spot) return;
@@ -1048,12 +1009,26 @@
             document.getElementById('modal-spot-desc').innerText = spot.desc || '暫無詳細介紹';
             document.getElementById('modal-spot-duration').innerText = spot.duration || '45 分鐘';
 
-            document.getElementById('spot-detail-modal').classList.remove('hidden');
+            const modal = document.getElementById('spot-detail-modal');
+            const content = modal.firstElementChild;
+            modal.classList.remove('hidden');
+            setTimeout(() => {
+                modal.classList.remove('opacity-0', 'pointer-events-none');
+                content.classList.remove('scale-95');
+                content.classList.add('scale-100');
+            }, 10);
         }
 
         function closeSpotDetailModal() {
-            document.getElementById('spot-detail-modal').classList.add('hidden');
-            activeModalSpotId = null;
+            const modal = document.getElementById('spot-detail-modal');
+            const content = modal.firstElementChild;
+            modal.classList.add('opacity-0', 'pointer-events-none');
+            content.classList.remove('scale-100');
+            content.classList.add('scale-95');
+            setTimeout(() => {
+                modal.classList.add('hidden');
+                activeModalSpotId = null;
+            }, 300);
         }
 
         function openSpotGoogleMaps() {
@@ -1137,7 +1112,7 @@
                 }
 
                 const cardHtml = `
-                    <div class="bg-white/95 border border-slate-200/80 rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition flex flex-col justify-between">
+                    <div class="bg-white/95 border border-slate-200/80 rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition duration-200 transform hover:-translate-y-1 flex flex-col justify-between">
                         <div class="relative h-28 overflow-hidden bg-slate-100 cursor-pointer group" onclick="openSpotDetailModalById('${spot.id}')">
                             <img src="${spot.img || 'https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?w=400&auto=format&fit=crop'}" onerror="this.src='https://placehold.co/400x200/0284c7/ffffff?text=美食景點'" class="w-full h-full object-cover group-hover:scale-105 transition duration-300">
                             <span class="absolute top-2 right-2 text-[9px] font-extrabold ${spot.type==='food'?'bg-amber-500 text-white':'bg-sky-600 text-white'} px-2 py-0.5 rounded-full shadow">
@@ -1187,119 +1162,41 @@
             showToast(`已成功新增【${SPOTS_DATABASE[spotId]?.name || '地點'}】至 Day ${currentDay}`);
         }
 
-        async function sendAiMessage() {
-            const inputEl = document.getElementById('ai-user-input');
-            const prompt = inputEl.value.trim();
-            if (!prompt) return;
-
-            inputEl.value = '';
-            appendAiChatMessage('user', prompt);
-
-            const btnSend = document.getElementById('btn-send-ai');
-            btnSend.disabled = true;
-            btnSend.innerHTML = `<i class="fa-solid fa-spinner animate-spin"></i> 思考中`;
-
-            try {
-                const systemPrompt = `你是花東台南自駕專家導遊。請用繁體中文極簡回答（120字以內），簡明扼要重點切入。`;
-                const apiKey = "";
-                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${apiKey}`;
-
-                const response = await fetch(apiUrl, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        contents: [{ parts: [{ text: prompt }] }],
-                        systemInstruction: { parts: [{ text: systemPrompt }] },
-                        generationConfig: { maxOutputTokens: 250 }
-                    })
-                });
-
-                const data = await response.json();
-                const aiText = data?.candidates?.[0]?.content?.parts?.[0]?.text || "建議品嚐傳媽媽家常菜、悟饕池上便當、大武阿梅海產與國華街牛肉湯！";
-                
-                appendAiChatMessage('ai', aiText, prompt);
-            } catch (err) {
-                console.error(err);
-                appendAiChatMessage('ai', "推薦造訪枋山傳媽媽家常菜、悟饕池上飯包故事館與大武阿梅海產！");
-            } finally {
-                btnSend.disabled = false;
-                btnSend.innerHTML = `<i class="fa-solid fa-paper-plane"></i> 傳送`;
-            }
-        }
-
-        function askAiPrompt(text) {
-            document.getElementById('ai-user-input').value = text;
-            sendAiMessage();
-        }
-
-        function appendAiChatMessage(sender, text, rawPrompt = '') {
-            const container = document.getElementById('ai-chat-container');
-            if (!container) return;
-            const isUser = sender === 'user';
-
-            let addCardBtnHtml = '';
-            if (!isUser) {
-                addCardBtnHtml = `
-                    <div class="mt-2 pt-2 border-t border-slate-100 flex items-center justify-between">
-                        <span class="text-[9px] text-sky-600 font-bold">✨ 想新增此地點至行程嗎？</span>
-                        <button onclick="openGoogleSearchModalWithQuery('${encodeURIComponent(rawPrompt.slice(0, 15))}')" class="bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold text-[10px] px-2.5 py-1 rounded-xl btn-bounce shadow-sm">
-                            <i class="fa-brands fa-google mr-1"></i> 地圖匯入
-                        </button>
-                    </div>
-                `;
-            }
-
-            const msgHtml = `
-                <div class="flex gap-2 items-start ${isUser ? 'flex-row-reverse' : ''}">
-                    <div class="w-6 h-6 rounded-full ${isUser ? 'bg-slate-900' : 'bg-sky-600'} text-white flex items-center justify-center text-[10px] shrink-0 shadow">
-                        <i class="fa-solid ${isUser ? 'fa-user' : 'fa-robot'}"></i>
-                    </div>
-                    <div class="${isUser ? 'bg-sky-600 text-white rounded-tr-none' : 'bg-white text-slate-700 border border-slate-200/80 rounded-tl-none'} p-2.5 rounded-xl shadow-sm text-xs max-w-[85%] leading-relaxed">
-                        ${text.replace(/\n/g, '<br>')}
-                        ${addCardBtnHtml}
-                    </div>
-                </div>
-            `;
-            container.insertAdjacentHTML('beforeend', msgHtml);
-            container.scrollTop = container.scrollHeight;
-        }
-
-        function openGoogleSearchModalWithQuery(encodedQuery) {
-            openGoogleSearchModal();
-            document.getElementById('gmap-query-input').value = decodeURIComponent(encodedQuery);
-            executeSpotSearch();
-        }
-
         function openGoogleSearchModal() {
-            document.getElementById('google-search-modal').classList.remove('hidden');
+            const modal = document.getElementById('google-search-modal');
+            const content = document.getElementById('google-search-modal-content');
+            modal.classList.remove('hidden');
+            setTimeout(() => {
+                modal.classList.remove('opacity-0', 'pointer-events-none');
+                content.classList.remove('scale-95');
+                content.classList.add('scale-100');
+            }, 10);
         }
 
         function closeGoogleSearchModal() {
-            document.getElementById('google-search-modal').classList.add('hidden');
+            const modal = document.getElementById('google-search-modal');
+            const content = document.getElementById('google-search-modal-content');
+            modal.classList.add('opacity-0', 'pointer-events-none');
+            content.classList.remove('scale-100');
+            content.classList.add('scale-95');
+            setTimeout(() => {
+                modal.classList.add('hidden');
+            }, 300);
         }
 
         function handleGoogleInput(val) {
-            if (val.trim().length > 2) {
-                let spotName = val.trim();
-                if (val.includes('maps') || val.includes('http') || val.includes('goo.gl')) {
-                    if (val.includes('place/')) {
-                        const parts = val.split('place/')[1].split('/');
-                        spotName = decodeURIComponent(parts[0].replace(/\+/g, ' '));
-                    } else {
-                        spotName = "Google 地圖匯入地點";
-                    }
-                }
-                showParsedResult(spotName, "Google 地圖連結/關鍵字解析成功");
+            if (val.trim().length > 1) {
+                showParsedResult(val.trim(), "手冊自訂景點與美食解析成功");
             }
         }
 
         function executeSpotSearch() {
             const query = document.getElementById('gmap-query-input').value.trim() || document.getElementById('gmap-link-input').value.trim();
             if (!query) {
-                showToast('請輸入地點名稱');
+                showToast('請輸入景點或美食名稱');
                 return;
             }
-            showParsedResult(query, "Google 地圖搜尋與定位成功");
+            showParsedResult(query, "景點與美食搜尋成功");
         }
 
         function showParsedResult(name, desc) {
@@ -1310,7 +1207,7 @@
                 lng: 121.15,
                 category: 'taitung_city',
                 type: 'spot',
-                tag: '自訂地點',
+                tag: '自訂景點',
                 duration: '45 mins',
                 desc: desc,
                 mustVisit: false,
@@ -1353,9 +1250,9 @@
 
             const dayTitles = {
                 1: 'Day 1 (10/23 (五)) - 07:00 台中啟程 ➔ 枋山午餐 ➔ 台東市區夜遊 (住宿：丰綺會館)',
-                2: 'Day 2 (10/24 (六)) - 初鹿牧場 ➔ 悟饕池上飯包故事館 ➔ 伯朗大道 ➔ 回家食間 (住宿：丰綺會館)',
+                2: 'Day 2 (10/24 (六)) - 初鹿牧場 ➔ 悟饕池上飯包文化故事館 ➔ 伯朗大道 ➔ 回家食間 (住宿：丰綺會館)',
                 3: 'Day 3 (10/25 (日)) - 多良車站 ➔ 大武/金崙美食 ➔ 移動至台南入住 (住宿：日日和民宿)',
-                4: 'Day 4 (10/26 (一)) - 台南市區美食景點自由行 ➔ 預計 15:00 賦歸返抵台中 (終點)'
+                4: 'Day 4 (10/26 (一)) - 台南國華街小吃與府城古蹟漫遊 ➔ 預計 15:00 賦歸返抵台中 (終點)'
             };
 
             for (let d = 1; d <= 4; d++) {
@@ -1372,7 +1269,7 @@
                 }).join('');
 
                 const blockHtml = `
-                    <div class="bg-slate-50/90 border border-slate-200/80 rounded-xl p-3">
+                    <div class="bg-slate-50/90 border border-slate-200/80 rounded-xl p-3 shadow-sm transition hover:shadow">
                         <h3 class="font-black text-slate-900 text-xs mb-1.5 text-sky-950 flex items-center justify-between">
                             <span>${dayTitles[d]}</span>
                             <span class="text-[10px] text-slate-500 font-normal">${spots.length}個點</span>
@@ -1386,17 +1283,24 @@
             }
         }
 
-        function handleMobilePrint() {
-            if (/Android|iPhone|iPad|iPod/i.test(navigator.userAgent)) {
-                openExportModal();
-                showToast('已開啟純文字導覽手冊，可直接複製儲存！');
-            } else {
-                window.print();
-            }
-        }
-
         function toggleMusicModal() {
-            document.getElementById('music-modal').classList.toggle('hidden');
+            const modal = document.getElementById('music-modal');
+            const content = document.getElementById('music-modal-content');
+            if (modal.classList.contains('hidden')) {
+                modal.classList.remove('hidden');
+                setTimeout(() => {
+                    modal.classList.remove('opacity-0', 'pointer-events-none');
+                    content.classList.remove('scale-95');
+                    content.classList.add('scale-100');
+                }, 10);
+            } else {
+                modal.classList.add('opacity-0', 'pointer-events-none');
+                content.classList.remove('scale-100');
+                content.classList.add('scale-95');
+                setTimeout(() => {
+                    modal.classList.add('hidden');
+                }, 300);
+            }
         }
 
         function openExportModal() {
@@ -1413,11 +1317,25 @@
             }
 
             document.getElementById('export-text-preview').innerText = summaryText;
-            document.getElementById('export-modal').classList.remove('hidden');
+            const modal = document.getElementById('export-modal');
+            const content = document.getElementById('export-modal-content');
+            modal.classList.remove('hidden');
+            setTimeout(() => {
+                modal.classList.remove('opacity-0', 'pointer-events-none');
+                content.classList.remove('scale-95');
+                content.classList.add('scale-100');
+            }, 10);
         }
 
         function closeExportModal() {
-            document.getElementById('export-modal').classList.add('hidden');
+            const modal = document.getElementById('export-modal');
+            const content = document.getElementById('export-modal-content');
+            modal.classList.add('opacity-0', 'pointer-events-none');
+            content.classList.remove('scale-100');
+            content.classList.add('scale-95');
+            setTimeout(() => {
+                modal.classList.add('hidden');
+            }, 300);
         }
 
         function copyToClipboard() {
