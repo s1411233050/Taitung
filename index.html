@@ -183,16 +183,16 @@
                         <!-- Day Tabs -->
                         <div class="grid grid-cols-4 gap-1 pt-0.5">
                             <button onclick="setActiveDay(1)" id="day-tab-1" class="day-tab btn-bounce py-1.5 rounded-xl text-center text-xs font-black transition bg-sky-600 text-white shadow-sm">
-                                Day 1<br><span class="font-normal text-[9px] opacity-90">10/23 五</span>
+                                Day 1<br><span class="font-normal text-[9px] opacity-90">10/23 (五)</span>
                             </button>
                             <button onclick="setActiveDay(2)" id="day-tab-2" class="day-tab btn-bounce py-1.5 rounded-xl text-center text-xs font-black transition bg-white/80 text-slate-600 hover:bg-white border border-slate-200/60">
-                                Day 2<br><span class="font-normal text-[9px] opacity-90">10/24 六</span>
+                                Day 2<br><span class="font-normal text-[9px] opacity-90">10/24 (六)</span>
                             </button>
                             <button onclick="setActiveDay(3)" id="day-tab-3" class="day-tab btn-bounce py-1.5 rounded-xl text-center text-xs font-black transition bg-white/80 text-slate-600 hover:bg-white border border-slate-200/60">
-                                Day 3<br><span class="font-normal text-[9px] opacity-90">10/25 日</span>
+                                Day 3<br><span class="font-normal text-[9px] opacity-90">10/25 (日)</span>
                             </button>
                             <button onclick="setActiveDay(4)" id="day-tab-4" class="day-tab btn-bounce py-1.5 rounded-xl text-center text-xs font-black transition bg-white/80 text-slate-600 hover:bg-white border border-slate-200/60">
-                                Day 4<br><span class="font-normal text-[9px] opacity-90">10/26 一</span>
+                                Day 4<br><span class="font-normal text-[9px] opacity-90">10/26 (一)</span>
                             </button>
                         </div>
                     </div>
@@ -313,7 +313,7 @@
                             <i class="fa-solid fa-robot"></i>
                         </div>
                         <div class="bg-white border border-slate-200/80 p-2.5 rounded-2xl rounded-tl-none shadow-sm text-xs text-slate-700 max-w-[88%] leading-relaxed">
-                            您好！我是你的 台東台南四天三夜 AI 旅遊助理 🤖🌾<br>
+                            您好！我是你的 台東台南四天三夜 AI 隨行助理 🤖🌾<br>
                             已為您同步載入 10/23~10/26 四天三夜所有景點行程。
                         </div>
                     </div>
@@ -447,7 +447,7 @@
         </button>
         <button onclick="switchMainTab('ai')" id="nav-btn-ai" class="nav-btn flex-1 py-1 px-1 rounded-full transition flex flex-col items-center justify-center gap-0.5 text-slate-300 hover:text-sky-300 font-bold">
             <i class="fa-solid fa-wand-magic-sparkles text-sm text-emerald-400"></i>
-            <span>AI 旅遊助理</span>
+            <span>AI 隨行助理</span>
         </button>
         <button onclick="switchMainTab('events')" id="nav-btn-events" class="nav-btn flex-1 py-1 px-1 rounded-full transition flex flex-col items-center justify-center gap-0.5 text-slate-300 hover:text-sky-300 font-bold">
             <i class="fa-solid fa-wheat-awn text-sm text-amber-300"></i>
@@ -589,10 +589,10 @@
                         <div>
                             <label class="block font-bold text-emerald-950 text-[10px] mb-1">加入至行程哪一天？</label>
                             <select id="import-target-day" class="w-full bg-white border border-emerald-300 rounded-lg p-1.5 font-bold text-slate-800 text-xs">
-                                <option value="1">Day 1 (10/23 五)</option>
-                                <option value="2">Day 2 (10/24 六)</option>
-                                <option value="3">Day 3 (10/25 日)</option>
-                                <option value="4">Day 4 (10/26 一)</option>
+                                <option value="1">Day 1 (10/23 (五))</option>
+                                <option value="2">Day 2 (10/24 (六))</option>
+                                <option value="3">Day 3 (10/25 (日))</option>
+                                <option value="4">Day 4 (10/26 (一))</option>
                             </select>
                         </div>
                         <div>
@@ -913,9 +913,9 @@
             updateGoogleMap();
 
             const nameMap = {
-                'my_custom': '⭐️ 自由規劃行程',
+                'my_custom': '👍 姐姐規劃的行程',
                 'photo': '📸 夢幻攝影美拍',
-                'classic': '🌟 經典必訪全覽',
+                'classic': '👑 經典必訪全覽',
                 'culture': '🏛️ 人文歷史之旅'
             };
             showToast(`已切換至【${nameMap[presetKey]}】`);
@@ -1352,10 +1352,10 @@
             container.innerHTML = '';
 
             const dayTitles = {
-                1: 'Day 1 (10/23 五) - 07:00 台中啟程 ➔ 枋山午餐 ➔ 台東市區夜遊 (宿：丰綺會館)',
-                2: 'Day 2 (10/24 六) - 初鹿牧場 ➔ 悟饕池上飯包故事館 ➔ 伯朗大道 ➔ 回家食間 (宿：丰綺會館)',
-                3: 'Day 3 (10/25 日) - 多良車站 ➔ 大武/金崙美食 ➔ 移動至台南入住 (宿：日日和民宿)',
-                4: 'Day 4 (10/26 一) - 台南市區美食景點自由行 ➔ 預計 15:00 賦歸返抵台中 (終點)'
+                1: 'Day 1 (10/23 (五)) - 07:00 台中啟程 ➔ 枋山午餐 ➔ 台東市區夜遊 (住宿：丰綺會館)',
+                2: 'Day 2 (10/24 (六)) - 初鹿牧場 ➔ 悟饕池上飯包故事館 ➔ 伯朗大道 ➔ 回家食間 (住宿：丰綺會館)',
+                3: 'Day 3 (10/25 (日)) - 多良車站 ➔ 大武/金崙美食 ➔ 移動至台南入住 (住宿：日日和民宿)',
+                4: 'Day 4 (10/26 (一)) - 台南市區美食景點自由行 ➔ 預計 15:00 賦歸返抵台中 (終點)'
             };
 
             for (let d = 1; d <= 4; d++) {
