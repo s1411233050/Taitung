@@ -150,7 +150,7 @@
                         </span>
                     </div>
                     <p class="text-[10px] text-slate-500 font-semibold truncate mt-0.2">
-                        <i class="fa-solid fa-compass text-sky-600"></i> 台東縱谷海岸慢遊
+                        <i class="fa-solid fa-compass text-sky-600"></i> 10/23(五)出發 • 台東縱谷海岸慢遊
                     </p>
                 </div>
             </div>
@@ -747,17 +747,19 @@
                 id: 'anping_old_street_morning', name: '安平老街漫步、牛肉湯與伴手禮採買', lat: 22.9980, lng: 120.1605,
                 category: 'tainan', type: 'spot', tag: '🍢 安平晨間巡禮', duration: '2.5 hrs',
                 desc: 'Day 4 早上優先留給安平：品嚐人氣牛肉湯/鹹粥、安平老街伴手禮採買（蝦餅、蜜餞）與古蹟巡禮！', mustVisit: true,
-                rating: 4.3, reviews: '46,015', address: '708臺南市安平區王城里國勝路35巷7號 (日日和民宿出發)',
+                rating: 4.3, reviews: '46,015', address: '708臺南市安平區王城里國勝路35巷7號',
                 parking: '安平古堡周邊收費停車場或安億免費停車場',
-                img: 'https://images.unsplash.com/photo-1569718212165-3a8278d5f624?w=400&auto=format&fit=crop'
+                img: 'https://images.unsplash.com/photo-1569718212165-3a8278d5f624?w=400&auto=format&fit=crop',
+                customMapUrl: 'https://www.google.com/maps/search/?api=1&query=708002臺南市安平區王城里國勝路35巷7號'
             },
             'tainan_free_tour': {
                 id: 'tainan_free_tour', name: '台南國華街小吃與府城古蹟漫遊 (彈性備選)', lat: 22.9975, lng: 120.1970,
                 category: 'tainan', type: 'spot', tag: '🍡 府城彈性巡禮', duration: '2 hrs',
                 desc: '國華街碗粿春捲、赤崁樓古蹟散策、文章牛肉湯漫遊（有時間再去）。', mustVisit: false,
-                rating: 4.5, reviews: '23', address: '700臺南市中西區五條港里國華街三段184號民族路3段11號 (富盛號)',
+                rating: 4.5, reviews: '23', address: '700臺南市中西區五條港里國華街三段184號民族路3段11號',
                 parking: '海安路地下公有停車場（步行約 5 分鐘）',
-                img: 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400&auto=format&fit=crop'
+                img: 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400&auto=format&fit=crop',
+                customMapUrl: 'https://www.google.com/maps/search/?api=1&query=700臺南市中西區五條港里國華街三段184號民族路3段11號'
             }
         };
 
@@ -1071,7 +1073,7 @@
             if (spot.customMapUrl) {
                 window.open(spot.customMapUrl, '_blank');
             } else {
-                window.open(`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(spot.name)}`, '_blank');
+                window.open(`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(spot.address || spot.name)}`, '_blank');
             }
         }
 
@@ -1088,18 +1090,21 @@
                 return;
             }
 
-            const spotNames = spotIds.map(id => SPOTS_DATABASE[id] ? SPOTS_DATABASE[id].name : id);
+            const spotAddresses = spotIds.map(id => {
+                const s = SPOTS_DATABASE[id];
+                return s ? (s.address || s.name) : id;
+            });
             
             if (spotIds.length === 1 && spotIds[0] === 'rongshu_mitaimu') {
                 iframe.src = `https://maps.google.com/maps?q=${encodeURIComponent('950臺東縣臺東市民生里浙江路323號')}&t=&z=15&ie=UTF8&iwloc=&output=embed`;
                 return;
             }
 
-            if (spotNames.length === 1) {
-                iframe.src = `https://maps.google.com/maps?q=${encodeURIComponent(spotNames[0])}&t=&z=13&ie=UTF8&iwloc=&output=embed`;
+            if (spotAddresses.length === 1) {
+                iframe.src = `https://maps.google.com/maps?q=${encodeURIComponent(spotAddresses[0])}&t=&z=13&ie=UTF8&iwloc=&output=embed`;
             } else {
-                const origin = encodeURIComponent(spotNames[0]);
-                const destination = encodeURIComponent(spotNames[spotNames.length - 1]);
+                const origin = encodeURIComponent(spotAddresses[0]);
+                const destination = encodeURIComponent(spotAddresses[spotAddresses.length - 1]);
                 iframe.src = `https://maps.google.com/maps?saddr=${origin}&daddr=${destination}&output=embed`;
             }
         }
@@ -1116,18 +1121,22 @@
                 return;
             }
 
-            const spotNames = spotIds.map(id => SPOTS_DATABASE[id] ? SPOTS_DATABASE[id].name : id);
-            if (spotNames.length === 1) {
+            const spotAddresses = spotIds.map(id => {
+                const s = SPOTS_DATABASE[id];
+                return s ? (s.address || s.name) : id;
+            });
+
+            if (spotAddresses.length === 1) {
                 const targetSpot = SPOTS_DATABASE[spotIds[0]];
                 if (targetSpot && targetSpot.customMapUrl) {
                     window.open(targetSpot.customMapUrl, '_blank');
                 } else {
-                    window.open(`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(spotNames[0])}`, '_blank');
+                    window.open(`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(spotAddresses[0])}`, '_blank');
                 }
             } else {
-                const origin = encodeURIComponent(spotNames[0]);
-                const destination = encodeURIComponent(spotNames[spotNames.length - 1]);
-                const waypoints = spotNames.slice(1, -1).map(n => encodeURIComponent(n)).join('|');
+                const origin = encodeURIComponent(spotAddresses[0]);
+                const destination = encodeURIComponent(spotAddresses[spotAddresses.length - 1]);
+                const waypoints = spotAddresses.slice(1, -1).map(n => encodeURIComponent(n)).join('|');
                 window.open(`https://www.google.com/maps/dir/?api=1&origin=${origin}&destination=${destination}&waypoints=${waypoints}&travelmode=driving`, '_blank');
             }
         }
@@ -1409,7 +1418,7 @@
             const container = document.getElementById('toast-container');
             if (!container) return;
             const toast = document.createElement('div');
-            toast.className = 'bg-slate-900/90 backdrop-blur-md text-white text-xs font-bold px-3.5 py-2 rounded-xl shadow-xl flex items-center gap-2 border border-white/20 transition-all transform duration-300 translate-y-[-10px] opacity-0 pointer-events-auto';
+            toast.className = 'bg-slate-900/90 backdrop-blur-md text-white text-xs font-bold px-3.5 py-2 rounded-xl shadow-xl flex items-center gap-2 border border-white/20 transition-all transform duration-300 translate-y-[-10px] opacity-0 pointer-events-none';
             toast.innerHTML = `<i class="fa-solid fa-circle-check text-emerald-400"></i> ${msg}`;
             container.appendChild(toast);
 
